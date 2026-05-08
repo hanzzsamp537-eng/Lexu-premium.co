@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>LUXE — Premium Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --ink:#0d0d14;--ink2:#13131f;--ink3:#1c1c2a;--ink4:#252538;--ink5:#2f2f45;
+  --mist:rgba(255,255,255,.05);--mist2:rgba(255,255,255,.09);--mist3:rgba(255,255,255,.15);
+  --gold:#c9a96e;--gold2:#e8c98a;--gold3:#f5e0b0;--gold4:rgba(201,169,110,.1);
+  --text:#f5f3ee;--text2:#9d9ba8;--text3:#52506a;
+  --em:#2ecc71;--ru:#e74c3c;--sa:#3498db;--am:#f0a500;--pi:#e040fb;
+  --r:12px;--r2:18px;--r3:26px;--r4:40px;
+  --sh:0 4px 20px rgba(0,0,0,.45);--sh2:0 16px 56px rgba(0,0,0,.65);
+  --glow:0 0 50px rgba(201,169,110,.12);
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --sb:252px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--text);min-height:100vh;overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;}
+button{cursor:pointer;font-family:'Outfit',sans-serif;}
+input,select,textarea{font-family:'Outfit',sans-serif;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--ink5);border-radius:4px;}
+
+.pg{display:none;}
+.pg.show{display:block;}
+#pg-auth.show,#pg-admin.show{display:flex;}
+
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9997;opacity:.5;}
+
+/* ── TOAST ── */
+#toasts{position:fixed;top:78px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:9px;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:11px;padding:13px 17px;background:var(--ink3);border:1px solid var(--mist3);border-radius:var(--r2);min-width:260px;max-width:340px;box-shadow:var(--sh2);font-size:13.5px;pointer-events:auto;animation:tIn .28s ease;border-left:3px solid var(--gold);}
+.toast.ok{border-left-color:var(--em);}
+.toast.err{border-left-color:var(--ru);}
+.toast.warn{border-left-color:var(--am);}
+@keyframes tIn{from{opacity:0;transform:translateX(110%)}to{opacity:1;transform:none}}
+@keyframes tOut{to{opacity:0;transform:translateX(110%)}}
+
+/* ── MODALS ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(14px);z-index:700;align-items:center;justify-content:center;padding:16px;}
+.ov.show{display:flex;}
+.modal{background:var(--ink2);border:1px solid var(--mist3);border-radius:var(--r3);padding:34px 30px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:var(--sh2),var(--glow);animation:mIn .27s ease;}
+@keyframes mIn{from{opacity:0;transform:scale(.93) translateY(16px)}to{opacity:1;transform:none}}
+.modal-hd{margin-bottom:22px;}
+.modal-hd h2{font-size:24px;font-weight:600;margin-bottom:4px;}
+.modal-hd p{color:var(--text2);font-size:13px;}
+
+/* ── FORMS ── */
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:7px;}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--ink3);border:1px solid var(--mist2);color:var(--text);padding:12px 15px;border-radius:var(--r);font-size:14px;outline:none;transition:border-color var(--tr),box-shadow var(--tr);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.11);}
+.fg textarea{resize:vertical;min-height:80px;}
+.fg select option{background:var(--ink3);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 22px;border-radius:var(--r);border:none;font-size:13.5px;font-weight:600;transition:all var(--tr);white-space:nowrap;letter-spacing:.1px;}
+.btn-gold{background:linear-gradient(135deg,#b8945a,#e8c98a,#c9a96e);background-size:200%;color:#0d0d14;box-shadow:0 4px 18px rgba(201,169,110,.28);}
+.btn-gold:hover{background-position:100%;box-shadow:0 6px 26px rgba(201,169,110,.42);transform:translateY(-1px);}
+.btn-ol{background:transparent;color:var(--text2);border:1px solid var(--mist3);}
+.btn-ol:hover{background:var(--mist);color:var(--text);}
+.btn-ghost{background:transparent;color:var(--text2);border:none;}
+.btn-ghost:hover{color:var(--text);}
+.btn-red{background:rgba(231,76,60,.11);color:var(--ru);border:1px solid rgba(231,76,60,.22);}
+.btn-red:hover{background:rgba(231,76,60,.2);}
+.btn-grn{background:rgba(46,204,113,.11);color:var(--em);border:1px solid rgba(46,204,113,.22);}
+.btn-grn:hover{background:rgba(46,204,113,.2);}
+.btn-blue{background:rgba(52,152,219,.11);color:var(--sa);border:1px solid rgba(52,152,219,.22);}
+.btn-blue:hover{background:rgba(52,152,219,.2);}
+.btn-w{width:100%;}
+.btn-sm{padding:7px 14px;font-size:12.5px;border-radius:10px;}
+
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;}
+.p-pending{background:rgba(240,165,0,.12);color:var(--am);border:1px solid rgba(240,165,0,.26);}
+.p-processing{background:rgba(52,152,219,.12);color:var(--sa);border:1px solid rgba(52,152,219,.26);}
+.p-success{background:rgba(46,204,113,.12);color:var(--em);border:1px solid rgba(46,204,113,.26);}
+.p-cancelled{background:rgba(231,76,60,.12);color:var(--ru);border:1px solid rgba(231,76,60,.26);}
+.p-expired{background:rgba(82,80,106,.2);color:var(--text3);border:1px solid rgba(82,80,106,.3);}
+
+.dv{display:flex;align-items:center;gap:12px;color:var(--text3);font-size:12px;margin:18px 0;}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:var(--mist2);}
+
+/* ── IMAGE UPLOAD ── */
+.img-upload-box{width:100%;height:160px;border:2px dashed var(--mist3);border-radius:var(--r2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all var(--tr);position:relative;overflow:hidden;background:var(--ink3);}
+.img-upload-box:hover{border-color:var(--gold);background:var(--gold4);}
+.img-upload-box .upload-icon{font-size:36px;margin-bottom:8px;opacity:.5;}
+.img-upload-box .upload-text{font-size:13px;color:var(--text2);}
+.img-upload-box .upload-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.img-upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;}
+.img-preview{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.img-preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--tr);z-index:3;}
+.img-upload-box:hover .img-preview-overlay{opacity:1;}
+.av-upload{width:100px;height:100px;border-radius:50%;border:3px dashed var(--mist3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 16px;position:relative;overflow:hidden;background:var(--ink3);transition:all var(--tr);}
+.av-upload:hover{border-color:var(--gold);}
+.av-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.av-preview{width:100%;height:100%;object-fit:cover;position:absolute;border-radius:50%;}
+
+/* ══ AUTH PAGE ══ */
+#pg-auth{min-height:100vh;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse 70% 60% at 5% 30%,rgba(201,169,110,.07) 0,transparent 55%),
+             radial-gradient(ellipse 50% 50% at 95% 75%,rgba(201,169,110,.05) 0,transparent 50%),
+             var(--ink);}
+.auth-wrap{width:100%;max-width:430px;}
+.auth-brand{text-align:center;margin-bottom:32px;}
+.auth-wordmark{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;letter-spacing:12px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.auth-tagline{font-size:11.5px;color:var(--text3);letter-spacing:3.5px;text-transform:uppercase;margin-top:5px;}
+.auth-card{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r3);padding:38px 34px;box-shadow:var(--sh2),var(--glow);}
+.auth-tabs{display:flex;gap:4px;background:var(--ink3);border-radius:var(--r);padding:4px;margin-bottom:26px;}
+.atab{flex:1;padding:10px;border:none;background:transparent;color:var(--text3);font-size:13.5px;font-weight:500;border-radius:10px;transition:all var(--tr);}
+.atab.on{background:var(--ink4);color:var(--text);box-shadow:var(--sh);}
+#frm-reg{display:none;}
+.auth-link{text-align:center;margin-top:14px;font-size:13px;color:var(--text3);}
+.auth-link span{color:var(--gold2);cursor:pointer;}
+.auth-link span:hover{text-decoration:underline;}
+.admin-box{background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.18);border-radius:var(--r2);padding:16px;margin-top:18px;}
+.admin-box p{font-size:12.5px;color:var(--text2);margin-bottom:12px;line-height:1.5;}
+
+/* ══ TOP NAV ══ */
+#topnav{display:none;position:sticky;top:0;z-index:300;background:rgba(13,13,20,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--mist2);height:66px;padding:0 26px;align-items:center;justify-content:space-between;}
+#topnav.show{display:flex;}
+.tn-logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;letter-spacing:7px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-r{display:flex;align-items:center;gap:9px;}
+.tn-ic{width:40px;height:40px;border-radius:var(--r);background:var(--mist);border:1px solid var(--mist2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:17px;position:relative;transition:all var(--tr);}
+.tn-ic:hover{border-color:var(--gold);color:var(--gold2);}
+.rdot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--ru);border-radius:50%;border:2px solid var(--ink);display:none;}
+.cpill{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--mist);border:1px solid var(--mist2);border-radius:var(--r);color:var(--text);font-size:13px;transition:all var(--tr);}
+.cpill:hover{border-color:var(--gold);color:var(--gold2);}
+.cpill .cn{background:var(--gold);color:#0d0d14;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:20px;min-width:20px;text-align:center;}
+.uchip{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 7px;background:var(--mist);border:1px solid var(--mist2);border-radius:var(--r);cursor:pointer;transition:all var(--tr);}
+.uchip:hover{border-color:var(--mist3);}
+.uav{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#0d0d14;flex-shrink:0;overflow:hidden;}
+.uav img{width:100%;height:100%;object-fit:cover;}
+.uav-txt{background:linear-gradient(135deg,var(--gold),var(--gold3));width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:700;color:#0d0d14;}
+.uname-txt{font-size:13px;font-weight:500;}
+#udrop{position:absolute;top:74px;right:26px;background:var(--ink2);border:1px solid var(--mist3);border-radius:var(--r2);min-width:210px;box-shadow:var(--sh2);z-index:400;display:none;overflow:hidden;animation:mIn .2s ease;}
+#udrop.show{display:block;}
+.ud-head{padding:14px 17px;border-bottom:1px solid var(--mist2);display:flex;align-items:center;gap:11px;}
+.ud-av-lg{width:40px;height:40px;border-radius:11px;overflow:hidden;flex-shrink:0;}
+.ud-av-lg img{width:100%;height:100%;object-fit:cover;}
+.ud-av-lg .uav-txt{width:40px;height:40px;font-size:18px;}
+.ud-name{font-weight:700;font-size:14px;}
+.ud-email{font-size:11.5px;color:var(--text3);margin-top:1px;}
+.dd-item{display:flex;align-items:center;gap:10px;padding:11px 17px;font-size:13.5px;color:var(--text2);cursor:pointer;transition:background var(--tr);}
+.dd-item:hover{background:var(--mist);color:var(--text);}
+.dd-item.red{color:var(--ru);}
+.dd-item.red:hover{background:rgba(231,76,60,.07);}
+
+/* ══ SHOP PAGE ══ */
+#pg-shop{background:var(--ink);}
+.hero{padding:58px 32px 36px;text-align:center;position:relative;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(201,169,110,.07) 0,transparent 65%);pointer-events:none;}
+.hero-eyebrow{font-size:11px;letter-spacing:4px;color:var(--gold);margin-bottom:13px;text-transform:uppercase;}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,6vw,62px);font-weight:300;line-height:1.1;margin-bottom:13px;}
+.hero-h strong{font-weight:600;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{color:var(--text2);font-size:14.5px;max-width:430px;margin:0 auto 26px;}
+.srch-bar{position:relative;max-width:420px;margin:0 auto;}
+.srch-bar input{width:100%;background:var(--ink2);border:1px solid var(--mist3);color:var(--text);padding:13px 46px 13px 20px;border-radius:var(--r4);font-size:14px;outline:none;transition:all var(--tr);}
+.srch-bar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.1);}
+.srch-bar .si{position:absolute;right:17px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;pointer-events:none;}
+.filters{display:flex;gap:7px;padding:14px 16px 6px;overflow-x:auto;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.fc{padding:8px 17px;border-radius:20px;border:1px solid var(--mist2);background:transparent;color:var(--text2);font-size:12.5px;white-space:nowrap;transition:all var(--tr);}
+.fc.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0d0d14;border-color:transparent;box-shadow:0 4px 14px rgba(201,169,110,.28);font-weight:700;}
+.fc:hover:not(.on){border-color:var(--gold);color:var(--gold2);}
+
+/* FIXED PRODUCT GRID */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;padding:14px 16px 100px;}
+.pcard{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r3);overflow:hidden;transition:all var(--tr);position:relative;display:flex;flex-direction:column;}
+.pcard:hover{transform:translateY(-5px);border-color:var(--mist3);box-shadow:var(--sh2),var(--glow);}
+.pcard-media{height:195px;background:linear-gradient(135deg,var(--ink3),var(--ink4));display:flex;align-items:center;justify-content:center;font-size:70px;position:relative;overflow:hidden;flex-shrink:0;}
+.pcard-media img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.pcard-emoji{position:relative;z-index:1;}
+.pcard-badge{position:absolute;top:11px;left:11px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0d0d14;letter-spacing:.3px;z-index:2;}
+.pcard-wish{position:absolute;top:11px;right:11px;width:33px;height:33px;border-radius:9px;background:rgba(13,13,20,.7);border:1px solid var(--mist2);color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all var(--tr);z-index:2;}
+.pcard-wish.on{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.3);color:var(--ru);}
+.pcard-body{padding:16px;flex:1;display:flex;flex-direction:column;}
+.pcard-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:4px;line-height:1.25;}
+.pcard-cat{font-size:11px;color:var(--text3);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase;}
+.pcard-desc{color:var(--text2);font-size:12.5px;line-height:1.5;margin-bottom:12px;flex:1;}
+/* FIXED FOOTER - button always visible */
+.pcard-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;flex-wrap:nowrap;}
+.pcard-price-wrap{flex-shrink:0;min-width:0;}
+.pcard-price{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+.pcard-orig{font-size:11px;color:var(--text3);text-decoration:line-through;font-family:'Outfit',sans-serif;-webkit-text-fill-color:var(--text3);margin-top:1px;}
+.add-btn{flex-shrink:0;padding:9px 13px;border-radius:var(--r);background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0d0d14;border:none;font-size:12px;font-weight:700;transition:all var(--tr);display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,169,110,.38);}
+.empty{text-align:center;padding:80px 20px;color:var(--text3);grid-column:1/-1;}
+.empty .ei{font-size:52px;margin-bottom:12px;}
+
+/* ══ SLIDE PANELS ══ */
+.spanel{position:fixed;top:0;bottom:0;right:0;z-index:500;background:var(--ink2);border-left:1px solid var(--mist3);display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--tr);box-shadow:-18px 0 60px rgba(0,0,0,.65);}
+.spanel.open{transform:none;}
+#cartPanel{width:395px;}
+#notifPanel{width:375px;}
+.sph{padding:22px 20px 17px;border-bottom:1px solid var(--mist2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.sph h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;}
+.spclose{width:33px;height:33px;border-radius:9px;background:var(--mist);border:1px solid var(--mist2);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all var(--tr);}
+.spclose:hover{color:var(--text);}
+.spbody{flex:1;overflow-y:auto;padding:14px;}
+.spfoot{padding:18px 20px;border-top:1px solid var(--mist2);flex-shrink:0;}
+.ci{display:flex;gap:12px;padding:13px;background:var(--ink3);border:1px solid var(--mist2);border-radius:var(--r2);margin-bottom:9px;}
+.ci-em{width:56px;height:56px;background:var(--ink4);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;overflow:hidden;}
+.ci-em img{width:100%;height:100%;object-fit:cover;}
+.ci-name{font-weight:600;font-size:13px;margin-bottom:3px;}
+.ci-price{color:var(--gold2);font-size:13px;font-weight:600;}
+.qty-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.qb{width:27px;height:27px;border-radius:8px;background:var(--ink4);border:1px solid var(--mist2);color:var(--text);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);}
+.qb:hover{background:var(--gold);border-color:var(--gold);color:#0d0d14;}
+.qn{font-size:14px;font-weight:700;min-width:18px;text-align:center;}
+.rmbtn{width:27px;height:27px;border-radius:8px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.2);color:var(--ru);font-size:14px;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all var(--tr);}
+.rmbtn:hover{background:rgba(231,76,60,.22);}
+.ct-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
+.ct-label{color:var(--text2);font-size:14px;}
+.ct-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ni{display:flex;gap:11px;padding:14px 15px;border-bottom:1px solid var(--mist2);cursor:pointer;transition:background var(--tr);}
+.ni:hover{background:var(--mist);}
+.ni.unread{border-left:3px solid var(--gold);}
+.ni-ic{width:37px;height:37px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ni-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.ni-msg{font-size:12.5px;color:var(--text2);line-height:1.4;}
+.ni-time{font-size:11px;color:var(--text3);margin-top:3px;}
+#pbg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:490;display:none;}
+#pbg.on{display:block;}
+
+/* ══ PAGE WRAPPER ══ */
+.pwrap{max-width:860px;margin:0 auto;padding:34px 22px 100px;}
+.phd{margin-bottom:26px;}
+.phd h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;margin-bottom:4px;}
+.phd p{color:var(--text2);font-size:13.5px;}
+
+/* ══ ORDERS ══ */
+.ocard{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);padding:20px;margin-bottom:13px;transition:box-shadow var(--tr);}
+.ocard:hover{box-shadow:var(--sh2);}
+.ocard-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px;gap:10px;flex-wrap:wrap;}
+.oid{font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:3px;}
+.odate{font-size:12.5px;color:var(--text2);}
+.ochips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
+.ochip{background:var(--ink3);border:1px solid var(--mist2);padding:4px 10px;border-radius:8px;font-size:12.5px;display:flex;align-items:center;gap:5px;}
+.ochip img{width:22px;height:22px;object-fit:cover;border-radius:4px;}
+.ofoot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px;}
+.otot{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--gold2);}
+.ometa{font-size:12px;color:var(--text3);}
+
+/* ══ PAYMENT HISTORY ══ */
+.ph-card{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);padding:18px;margin-bottom:11px;}
+.ph-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ph-method{font-weight:700;font-size:14px;}
+.ph-amount{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold2);font-weight:500;}
+.ph-info{font-size:12px;color:var(--text3);}
+
+/* ══ PROFILE ══ */
+.profile-card{max-width:560px;margin:40px auto;background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r3);padding:36px;box-shadow:var(--sh2);}
+.profile-av-wrap{text-align:center;margin-bottom:28px;}
+.profile-av{width:100px;height:100px;border-radius:50%;margin:0 auto 12px;overflow:hidden;border:3px solid var(--mist3);position:relative;cursor:pointer;transition:border-color var(--tr);}
+.profile-av:hover{border-color:var(--gold);}
+.profile-av img,.profile-av .uav-txt{width:100%;height:100%;}
+.profile-av-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity var(--tr);border-radius:50%;}
+.profile-av:hover .profile-av-overlay{opacity:1;}
+.profile-av-overlay span{font-size:22px;}
+.profile-av-overlay p{font-size:11px;color:#fff;margin-top:4px;}
+.profile-av input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;border-radius:50%;z-index:2;}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;text-align:center;}
+.profile-role{font-size:12px;color:var(--text3);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+
+/* ══ REDEEM CODE ══ */
+.redeem-section{background:var(--gold4);border:1px solid rgba(201,169,110,.2);border-radius:var(--r2);padding:18px;margin-bottom:18px;}
+.redeem-section h4{font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:12px;color:var(--gold2);}
+.redeem-row{display:flex;gap:8px;}
+.redeem-row input{flex:1;background:var(--ink3);border:1px solid var(--mist2);color:var(--text);padding:11px 15px;border-radius:var(--r);font-size:14px;outline:none;transition:border-color var(--tr);}
+.redeem-row input:focus{border-color:var(--gold);}
+.redeemed-list{margin-top:14px;}
+.redeem-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--ink3);border-radius:var(--r);margin-bottom:7px;font-size:13px;}
+.redeem-item .code-tag{font-family:monospace;color:var(--gold2);font-weight:700;}
+.redeem-item .disc-tag{color:var(--em);font-weight:600;}
+
+/* ══ ADMIN LAYOUT ══ */
+#pg-admin{background:var(--ink);flex-direction:row;min-height:100vh;}
+.sidebar{width:var(--sb);background:var(--ink2);border-right:1px solid var(--mist2);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:200;transition:transform var(--tr);}
+.sb-logo{padding:24px 20px 18px;border-bottom:1px solid var(--mist2);}
+.sb-wm{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sb-role{font-size:9.5px;letter-spacing:2.5px;color:var(--text3);text-transform:uppercase;margin-top:3px;}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto;}
+.sb-sec{margin-bottom:20px;}
+.sb-sec-t{font-size:9.5px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.8px;padding:0 12px;margin-bottom:7px;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:var(--r);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:all var(--tr);border:1px solid transparent;}
+.sb-item:hover{background:var(--mist);color:var(--text);}
+.sb-item.on{background:var(--gold4);color:var(--gold2);border-color:rgba(201,169,110,.18);}
+.sb-item .ic{font-size:15px;width:22px;text-align:center;color:inherit;}
+.sb-badge{margin-left:auto;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:800;background:var(--am);color:#0d0d14;}
+.sb-badge.g{background:var(--gold);}
+.sb-foot{padding:16px 13px;border-top:1px solid var(--mist2);}
+.sb-user{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.sb-av{width:37px;height:37px;border-radius:10px;overflow:hidden;flex-shrink:0;}
+.sb-av img{width:100%;height:100%;object-fit:cover;}
+.sb-av .uav-txt{width:37px;height:37px;font-size:16px;}
+.sb-uname{font-weight:700;font-size:13.5px;}
+.sb-urole{font-size:10.5px;color:var(--text3);}
+.amain{margin-left:var(--sb);flex:1;padding:28px;min-width:0;}
+.atab-s{display:none;}
+.atab-s.on{display:block;}
+.adm-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;gap:14px;flex-wrap:wrap;}
+.adm-hd-l .crumb{font-size:11px;color:var(--text3);margin-bottom:4px;}
+.adm-hd-l h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;}
+.adm-hd-l p{color:var(--text2);font-size:13px;margin-top:3px;}
+.stats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:26px;}
+.sc{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);padding:20px;position:relative;overflow:hidden;transition:all var(--tr);}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.sc::after{content:'';position:absolute;top:-18px;right:-18px;width:85px;height:85px;border-radius:50%;filter:blur(28px);opacity:.35;}
+.sc.gold::after{background:var(--gold);}
+.sc.gr::after{background:var(--em);}
+.sc.am::after{background:var(--am);}
+.sc.sa::after{background:var(--sa);}
+.sc-ic{font-size:22px;margin-bottom:13px;color:var(--gold2);}
+.sc-lbl{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.sc-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;}
+.sc-sub{font-size:12px;color:var(--em);margin-top:3px;}
+.acard{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);overflow:hidden;margin-bottom:20px;}
+.acard-hd{padding:17px 20px;border-bottom:1px solid var(--mist2);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.acard-hd h3{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;}
+.twrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+th{padding:11px 17px;text-align:left;font-size:10.5px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--mist2);white-space:nowrap;}
+td{padding:14px 17px;font-size:13.5px;border-bottom:1px solid var(--mist2);}
+tr:last-child td{border-bottom:none;}
+tbody tr{transition:background var(--tr);}
+tbody tr:hover td{background:var(--mist);}
+.tav{width:32px;height:32px;border-radius:9px;overflow:hidden;flex-shrink:0;}
+.tav img{width:100%;height:100%;object-fit:cover;}
+.tav .uav-txt{width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,var(--gold),var(--gold3));}
+.sbtabs{display:flex;gap:3px;background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r);padding:4px;margin-bottom:20px;width:fit-content;flex-wrap:wrap;}
+.sbt{padding:8px 16px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:500;transition:all var(--tr);}
+.sbt.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0d0d14;box-shadow:0 3px 12px rgba(201,169,110,.28);font-weight:700;}
+.sbt:hover:not(.on){color:var(--text);background:var(--mist);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.code-box{background:var(--ink3);border:1px solid rgba(201,169,110,.2);border-radius:var(--r2);padding:20px;text-align:center;margin:14px 0;}
+.code-val{font-family:monospace;font-size:26px;font-weight:700;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.code-hint{font-size:11px;color:var(--text3);margin-top:5px;}
+.prow{background:var(--ink3);border:1px solid var(--mist2);border-radius:var(--r);padding:15px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:11px;flex-wrap:wrap;}
+.abar-wrap{margin-bottom:6px;}
+.abar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.abar{height:7px;background:var(--ink3);border-radius:4px;overflow:hidden;}
+.abar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:width .6s ease;}
+.act-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--mist2);}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.act-content{flex:1;}
+.act-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.act-sub{font-size:12px;color:var(--text2);}
+.act-time{font-size:11px;color:var(--text3);white-space:nowrap;}
+.pmgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.pm{padding:13px 14px;background:var(--ink3);border:2px solid var(--mist2);border-radius:var(--r);cursor:pointer;transition:all var(--tr);text-align:center;}
+.pm:hover{border-color:var(--gold);}
+.pm.on{border-color:var(--gold);background:var(--gold4);box-shadow:0 0 0 3px rgba(201,169,110,.09);}
+.pm-icon{font-size:22px;margin-bottom:5px;}
+.pm-name{font-size:13px;font-weight:700;}
+.pm-desc{font-size:11px;color:var(--text2);margin-top:2px;}
+
+/* REDEEM CODE ADMIN */
+.rcode-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--ink3);border:1px solid var(--mist2);border-radius:var(--r);margin-bottom:8px;gap:10px;flex-wrap:wrap;}
+.rcode-tag{font-family:monospace;font-size:14px;color:var(--gold2);font-weight:700;letter-spacing:2px;}
+.rcode-meta{font-size:11.5px;color:var(--text3);}
+.rcode-disc{font-size:13px;color:var(--em);font-weight:700;}
+
+/* PARTNER SECTION */
+.partner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;padding:14px 0;}
+.partner-card{background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);padding:20px;text-align:center;transition:all var(--tr);cursor:default;}
+.partner-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--sh2);}
+.partner-logo{width:64px;height:64px;border-radius:14px;margin:0 auto 12px;overflow:hidden;background:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:28px;}
+.partner-logo img{width:100%;height:100%;object-fit:cover;}
+.partner-name{font-weight:700;font-size:14px;margin-bottom:4px;}
+.partner-desc{font-size:12px;color:var(--text2);line-height:1.4;}
+
+/* ADMIN LOG */
+.log-item{padding:12px 16px;border-bottom:1px solid var(--mist2);display:flex;gap:12px;align-items:flex-start;}
+.log-item:last-child{border-bottom:none;}
+.log-icon{width:32px;height:32px;border-radius:9px;background:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:var(--gold2);}
+.log-body{flex:1;}
+.log-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.log-meta{font-size:11.5px;color:var(--text2);}
+.log-time{font-size:11px;color:var(--text3);white-space:nowrap;}
+.log-level{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;margin-left:6px;}
+.log-level.info{background:rgba(52,152,219,.15);color:var(--sa);}
+.log-level.warn{background:rgba(240,165,0,.15);color:var(--am);}
+.log-level.danger{background:rgba(231,76,60,.15);color:var(--ru);}
+
+/* ══ MOBILE BOTTOM NAV - FIXED ══ */
+#mobnav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,20,.97);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-top:1px solid var(--mist2);z-index:490;padding:6px 0 calc(env(safe-area-inset-bottom,0px) + 2px);}
+.mnav{display:flex;justify-content:space-around;align-items:center;}
+.mni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;color:var(--text3);font-size:10px;font-weight:500;cursor:pointer;transition:color var(--tr);position:relative;min-width:52px;}
+.mni.on{color:var(--gold2);}
+.mni .mi{font-size:19px;line-height:1;}
+.mni .mi-fa{font-size:17px;width:19px;text-align:center;line-height:1;}
+.md{position:absolute;top:3px;right:8px;width:7px;height:7px;background:var(--ru);border-radius:50%;border:2px solid rgba(13,13,20,.97);display:none;}
+
+/* ══ SESSION BAR ══ */
+#sessionBar{display:none;position:fixed;bottom:64px;left:0;right:0;background:rgba(240,165,0,.15);border-top:1px solid rgba(240,165,0,.3);border-bottom:1px solid rgba(240,165,0,.3);padding:10px 20px;z-index:9000;align-items:center;justify-content:space-between;font-size:13px;}
+#sessionBar.show{display:flex;}
+#sessionBar span{color:var(--am);}
+#sessionBar button{padding:6px 14px;border-radius:8px;background:var(--am);color:#0d0d14;border:none;font-size:12px;font-weight:700;cursor:pointer;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  #topnav{padding:0 14px;height:60px;}
+  .tn-r .desktop{display:none;}
+  .hero{padding:28px 14px 18px;}
+  .hero-h{font-size:28px;}
+  .filters{padding:8px 14px 4px;}
+  /* MOBILE: 2 columns, proper sizing */
+  .pgrid{grid-template-columns:repeat(2,1fr);gap:10px;padding:8px 10px 110px;}
+  .pcard-media{height:140px;font-size:48px;}
+  .pcard-body{padding:11px 10px;}
+  .pcard-name{font-size:15px;}
+  .pcard-desc{font-size:11.5px;margin-bottom:8px;}
+  .pcard-price{font-size:16px;}
+  .pcard-orig{font-size:10px;}
+  /* FIXED: smaller add button on mobile */
+  .add-btn{padding:7px 9px;font-size:11px;gap:3px;}
+  #cartPanel,#notifPanel{width:100%;border-left:none;}
+  .pwrap{padding:18px 14px 110px;}
+  .profile-card{margin:16px 14px;padding:22px 16px;}
+  #mobnav{display:block;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:none;}
+  #sbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none;}
+  #sbg.on{display:block;}
+  .amain{margin-left:0;padding:14px 12px 110px;}
+  .stats-g{grid-template-columns:repeat(2,1fr);}
+  .g2{grid-template-columns:1fr;}
+  .g3{grid-template-columns:1fr 1fr;}
+  .auth-card{padding:24px 16px;}
+  .pmgrid{grid-template-columns:1fr 1fr;}
+  #udrop{right:14px;top:66px;}
+  #sessionBar{bottom:70px;}
+  .partner-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(min-width:769px){
+  .mob-only{display:none!important;}
+  #mobnav{display:none!important;}
+}
+@media(max-width:380px){
+  .pgrid{grid-template-columns:1fr;}
+  .g3{grid-template-columns:1fr;}
+  .add-btn{padding:7px 8px;font-size:10.5px;}
+}
+</style>
+</head>
+<body>
+
+<div id="toasts"></div>
+<div id="pbg" onclick="closePanels()"></div>
+<div id="sbg" onclick="closeSB()"></div>
+
+<div id="sessionBar">
+  <span>⏰ Sesi akan berakhir dalam <b id="sessTick">5:00</b> menit</span>
+  <button onclick="renewSession()">Perpanjang Sesi</button>
+</div>
+
+<!-- TOP NAV -->
+<nav id="topnav">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="tn-ic mob-only" id="sbToggle" onclick="openSB()" style="display:none;"><i class="fas fa-bars"></i></button>
+    <div class="tn-logo">LUXE</div>
+  </div>
+  <div class="tn-r" id="tnRight"></div>
+</nav>
+<div id="udrop">
+  <div class="ud-head">
+    <div class="ud-av-lg" id="udAvLg"><div class="uav-txt" id="udAvTxt">U</div></div>
+    <div><div class="ud-name" id="udName">—</div><div class="ud-email" id="udEmail">—</div></div>
+  </div>
+  <div class="dd-item" onclick="goTo('profile')"><i class="fas fa-user-edit" style="width:16px;"></i> Edit Profil</div>
+  <div class="dd-item" onclick="goTo('orders')"><i class="fas fa-box" style="width:16px;"></i> Pesanan Saya</div>
+  <div class="dd-item" onclick="goTo('wish')"><i class="fas fa-heart" style="width:16px;"></i> Wishlist</div>
+  <div class="dd-item" onclick="goTo('payhist')"><i class="fas fa-receipt" style="width:16px;"></i> Riwayat Bayar</div>
+  <div class="dd-item red" onclick="doLogout()"><i class="fas fa-sign-out-alt" style="width:16px;"></i> Keluar</div>
+</div>
+
+<!-- AUTH PAGE -->
+<div id="pg-auth" class="pg">
+  <div class="auth-wrap">
+    <div class="auth-brand">
+      <div class="auth-wordmark">LUXE</div>
+      <div class="auth-tagline">Premium Shopping Experience</div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="atab on" onclick="authSwitch('login',this)">Masuk</button>
+        <button class="atab" onclick="authSwitch('reg',this)">Daftar</button>
+      </div>
+      <div id="frm-login">
+        <div class="fg"><label>Email</label><input type="email" id="liEmail" placeholder="email@kamu.com" autocomplete="email"></div>
+        <div class="fg"><label>Password</label><input type="password" id="liPass" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn btn-gold btn-w" onclick="doLogin()">Masuk →</button>
+        <div class="dv">demo cepat</div>
+        <div style="display:flex;gap:7px;">
+          <button class="btn btn-ol btn-w btn-sm" onclick="quickLogin('user')"><i class="fas fa-user"></i> Demo User</button>
+          <button class="btn btn-ol btn-w btn-sm" onclick="quickLogin('admin')"><i class="fas fa-shield-alt"></i> Demo Admin</button>
+        </div>
+        <div class="auth-link">Belum punya akun? <span onclick="authSwitch('reg',document.querySelectorAll('.atab')[1])">Daftar →</span></div>
+      </div>
+      <div id="frm-reg">
+        <div class="fg"><label>Nama Lengkap</label><input type="text" id="rnName" placeholder="Nama lengkap" autocomplete="name"></div>
+        <div class="fg"><label>Email</label><input type="email" id="rnEmail" placeholder="email@kamu.com" autocomplete="email"></div>
+        <div class="fg"><label>Password</label><input type="password" id="rnPass" placeholder="Min. 6 karakter" autocomplete="new-password"></div>
+        <button class="btn btn-gold btn-w" onclick="doRegister()">Buat Akun →</button>
+        <div class="admin-box">
+          <p><i class="fas fa-shield-alt"></i> Daftar sebagai Admin? Masukkan kode dari pemilik toko:</p>
+          <div class="fg" style="margin:0 0 11px;"><input type="text" id="rnCode" placeholder="LUXE-XXXXXXX" style="text-transform:uppercase;letter-spacing:3px;text-align:center;font-weight:700;font-size:15px;"></div>
+          <button class="btn btn-ol btn-w btn-sm" onclick="doAdminReg()">Daftar sebagai Admin</button>
+        </div>
+        <div class="auth-link">Sudah punya akun? <span onclick="authSwitch('login',document.querySelectorAll('.atab')[0])">Masuk →</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP PAGE -->
+<div id="pg-shop" class="pg">
+  <div class="hero">
+    <div class="hero-eyebrow">✦ Koleksi Terkurasi</div>
+    <h1 class="hero-h">Temukan <strong>Produk Impian</strong><br>Kamu Di Sini</h1>
+    <p class="hero-sub">Koleksi premium pilihan dengan kualitas terjamin, dikirim ke seluruh Indonesia.</p>
+    <div class="srch-bar"><input type="text" id="srch" placeholder="Cari produk..." oninput="renderProds()"><span class="si"><i class="fas fa-search"></i></span></div>
+  </div>
+  <div class="filters" id="filtersRow"></div>
+  <div class="pgrid" id="prodGrid"></div>
+</div>
+
+<!-- ORDERS PAGE -->
+<div id="pg-orders" class="pg">
+  <div class="pwrap">
+    <div class="phd"><h1><i class="fas fa-box-open" style="font-size:26px;margin-right:10px;color:var(--gold2);"></i>Pesanan Saya</h1><p>Lacak & kelola semua pesananmu.</p></div>
+    <div id="orderList"></div>
+  </div>
+</div>
+
+<!-- PAYMENT HISTORY PAGE -->
+<div id="pg-payhist" class="pg">
+  <div class="pwrap">
+    <div class="phd"><h1><i class="fas fa-receipt" style="font-size:26px;margin-right:10px;color:var(--gold2);"></i>Riwayat Pembayaran</h1><p>Semua riwayat transaksi kamu.</p></div>
+    <div id="payhistList"></div>
+  </div>
+</div>
+
+<!-- WISHLIST PAGE -->
+<div id="pg-wish" class="pg">
+  <div class="pwrap">
+    <div class="phd"><h1><i class="fas fa-heart" style="font-size:26px;margin-right:10px;color:var(--ru);"></i>Wishlist</h1><p>Produk favorit yang kamu simpan.</p></div>
+    <div class="pgrid" id="wishGrid"></div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="pg-profile" class="pg">
+  <div class="pwrap">
+    <div class="phd"><h1><i class="fas fa-user-circle" style="font-size:26px;margin-right:10px;color:var(--gold2);"></i>Edit Profil</h1><p>Perbarui informasi akun kamu.</p></div>
+    <div class="profile-card">
+      <div class="profile-av-wrap">
+        <div class="profile-av" id="profileAvWrap">
+          <div class="uav-txt" id="profileAvTxt" style="width:100%;height:100%;font-size:40px;display:flex;align-items:center;justify-content:center;"></div>
+          <img id="profileAvImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+          <div class="profile-av-overlay"><span><i class="fas fa-camera"></i></span><p>Ganti Foto</p></div>
+          <input type="file" accept="image/*" onchange="handleAvatarUpload(event)">
+        </div>
+        <div class="profile-name" id="profName">—</div>
+        <div class="profile-role" id="profRole">—</div>
+      </div>
+      <!-- Redeem Code -->
+      <div class="redeem-section">
+        <h4><i class="fas fa-tag"></i> Kode Redeem</h4>
+        <div class="redeem-row">
+          <input type="text" id="redeemInput" placeholder="Masukkan kode redeem..." style="text-transform:uppercase;letter-spacing:2px;">
+          <button class="btn btn-gold btn-sm" onclick="doRedeem()"><i class="fas fa-check"></i> Tukar</button>
+        </div>
+        <div class="redeemed-list" id="redeemedList"></div>
+      </div>
+      <div class="fg"><label>Nama Lengkap</label><input type="text" id="editName" placeholder="Nama lengkap"></div>
+      <div class="fg"><label>Username</label><input type="text" id="editUsername" placeholder="@username"></div>
+      <div class="fg"><label>Bio</label><textarea id="editBio" placeholder="Ceritakan sedikit tentang kamu..."></textarea></div>
+      <div class="fg"><label>No. HP</label><input type="tel" id="editPhone" placeholder="08xxxxxxxxxx"></div>
+      <div class="fg"><label>Alamat Utama</label><textarea id="editAddress" placeholder="Alamat pengiriman utama kamu..."></textarea></div>
+      <div class="dv">Ganti Password</div>
+      <div class="fg"><label>Password Baru (kosongkan jika tidak diganti)</label><input type="password" id="editPass" placeholder="••••••••"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-ol" style="flex:1;" onclick="goTo('shop')">Batal</button>
+        <button class="btn btn-gold" style="flex:2;" onclick="saveProfile()"><i class="fas fa-save"></i> Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="pg-admin" class="pg">
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-wm">LUXE</div>
+      <div class="sb-role">Admin Panel</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">
+        <div class="sb-sec-t">Utama</div>
+        <div class="sb-item on" onclick="admTab('dashboard',this)"><span class="ic"><i class="fas fa-chart-pie"></i></span>Dashboard</div>
+        <div class="sb-item" onclick="admTab('orders',this)"><span class="ic"><i class="fas fa-shopping-bag"></i></span>Pesanan<span class="sb-badge" id="sbB1">0</span></div>
+        <div class="sb-item" onclick="admTab('products',this)"><span class="ic"><i class="fas fa-store"></i></span>Produk</div>
+        <div class="sb-item" onclick="admTab('analytics',this)"><span class="ic"><i class="fas fa-chart-line"></i></span>Analitik</div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-sec-t">Pengguna</div>
+        <div class="sb-item" onclick="admTab('users',this)"><span class="ic"><i class="fas fa-users"></i></span>Pengguna</div>
+        <div class="sb-item" onclick="admTab('admins',this)"><span class="ic"><i class="fas fa-shield-alt"></i></span>Kelola Admin<span class="sb-badge g" id="sbB2">0</span></div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-sec-t">Fitur</div>
+        <div class="sb-item" onclick="admTab('redeem',this)"><span class="ic"><i class="fas fa-ticket-alt"></i></span>Kode Redeem</div>
+        <div class="sb-item" onclick="admTab('partners',this)"><span class="ic"><i class="fas fa-handshake"></i></span>Partner</div>
+        <div class="sb-item" onclick="admTab('broadcast',this)"><span class="ic"><i class="fas fa-bullhorn"></i></span>Notifikasi</div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-sec-t">Sistem</div>
+        <div class="sb-item" onclick="admTab('adminlog',this)"><span class="ic"><i class="fas fa-history"></i></span>Log Admin<span class="sb-badge" id="sbB3" style="background:var(--ru);display:none;">!</span></div>
+        <div class="sb-item" onclick="goTo('profile')"><span class="ic"><i class="fas fa-user-cog"></i></span>Profil Admin</div>
+      </div>
+    </div>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-av" id="sbAv"><div class="uav-txt" id="sbAvTxt">A</div></div>
+        <div><div class="sb-uname" id="sbUname">Admin</div><div class="sb-urole" id="sbUrole">Super Admin</div></div>
+      </div>
+      <button class="btn btn-red btn-w btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+    </div>
+  </div>
+  <div class="amain">
+
+    <!-- DASHBOARD -->
+    <div class="atab-s on" id="at-dashboard">
+      <div class="adm-hd">
+        <div class="adm-hd-l"><div class="crumb">Admin / Dashboard</div><h1>Dashboard</h1><p>Selamat datang kembali!</p></div>
+        <div id="admClock" style="text-align:right;"></div>
+      </div>
+      <div class="stats-g">
+        <div class="sc gold"><div class="sc-ic"><i class="fas fa-coins"></i></div><div class="sc-lbl">Pendapatan</div><div class="sc-val" id="stRev">Rp 0</div><div class="sc-sub">Pesanan sukses</div></div>
+        <div class="sc gr"><div class="sc-ic"><i class="fas fa-box"></i></div><div class="sc-lbl">Total Pesanan</div><div class="sc-val" id="stOrd">0</div><div class="sc-sub">Semua waktu</div></div>
+        <div class="sc am"><div class="sc-ic"><i class="fas fa-clock"></i></div><div class="sc-lbl">Pending</div><div class="sc-val" id="stPend">0</div><div class="sc-sub">Perlu diproses</div></div>
+        <div class="sc sa"><div class="sc-ic"><i class="fas fa-users"></i></div><div class="sc-lbl">Pengguna</div><div class="sc-val" id="stUsr">0</div><div class="sc-sub">Terdaftar</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:20px;" id="dashCols">
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Pesanan Terbaru</h3><span class="pill p-pending" id="dashPendCount">0 pending</span></div>
+          <div class="twrap"><table><thead><tr><th>ID</th><th>Pembeli</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="dashOrdTbl"></tbody></table></div>
+        </div>
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Aktivitas</h3></div>
+          <div style="padding:14px;" id="actFeed"></div>
+        </div>
+      </div>
+      <div class="g2" id="dashBottom">
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Penjualan per Kategori</h3></div>
+          <div style="padding:16px;" id="catChart"></div>
+        </div>
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Metode Pembayaran</h3></div>
+          <div style="padding:16px;" id="payChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="atab-s" id="at-orders">
+      <div class="adm-hd"><div class="adm-hd-l"><div class="crumb">Admin / Pesanan</div><h1>Pesanan</h1></div></div>
+      <div class="sbtabs">
+        <button class="sbt on" onclick="ordFil('all',this)">Semua</button>
+        <button class="sbt" onclick="ordFil('pending',this)">Pending</button>
+        <button class="sbt" onclick="ordFil('processing',this)">Diproses</button>
+        <button class="sbt" onclick="ordFil('success',this)">Selesai</button>
+        <button class="sbt" onclick="ordFil('cancelled',this)">Batal</button>
+      </div>
+      <div class="acard">
+        <div class="twrap"><table><thead><tr><th>ID</th><th>Pembeli</th><th>Item</th><th>Total</th><th>Pembayaran</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="allOrdTbl"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="atab-s" id="at-products">
+      <div class="adm-hd">
+        <div class="adm-hd-l"><div class="crumb">Admin / Produk</div><h1>Produk</h1><p id="prodCount">—</p></div>
+        <button class="btn btn-gold btn-sm" onclick="openM('addProdMod')"><i class="fas fa-plus"></i> Tambah Produk</button>
+      </div>
+      <div class="pgrid" id="admProdGrid" style="padding:0 0 20px;"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="atab-s" id="at-analytics">
+      <div class="adm-hd"><div class="adm-hd-l"><div class="crumb">Admin / Analitik</div><h1>Analitik</h1><p>Data performa toko secara mendalam.</p></div></div>
+      <div class="stats-g" id="anaStats"></div>
+      <div class="g2">
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Top Produk Terlaris</h3></div>
+          <div style="padding:16px;" id="topProds"></div>
+        </div>
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Pengguna Paling Aktif</h3></div>
+          <div style="padding:16px;" id="topUsers"></div>
+        </div>
+      </div>
+      <div class="acard">
+        <div class="acard-hd"><h3>Ringkasan Keuangan</h3></div>
+        <div style="padding:16px;" id="finSummary"></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="atab-s" id="at-users">
+      <div class="adm-hd"><div class="adm-hd-l"><div class="crumb">Admin / Pengguna</div><h1>Pengguna</h1></div></div>
+      <div class="acard">
+        <div class="twrap"><table><thead><tr><th>Pengguna</th><th>Email</th><th>Bergabung</th><th>Pesanan</th><th>Total Belanja</th><th>Aksi</th></tr></thead><tbody id="usersTbl"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ADMINS -->
+    <div class="atab-s" id="at-admins">
+      <div class="adm-hd"><div class="adm-hd-l"><div class="crumb">Admin / Kelola Admin</div><h1>Kelola Admin</h1></div></div>
+      <div class="g2">
+        <div class="acard" style="overflow:visible;margin:0;">
+          <div class="acard-hd"><h3><i class="fas fa-key"></i> Generate Kode Admin</h3></div>
+          <div style="padding:20px;">
+            <p style="color:var(--text2);font-size:13.5px;line-height:1.6;margin-bottom:16px;">Buat kode unik untuk mendaftarkan admin baru. Sekali pakai, tidak bisa digunakan lagi.</p>
+            <button class="btn btn-gold btn-w" onclick="genCode()"><i class="fas fa-magic"></i> Generate Kode Baru</button>
+            <div class="code-box" id="codeBox" style="display:none;"><div class="code-val" id="codeVal">—</div><div class="code-hint">Sekali pakai · Bagikan ke calon admin terpercaya</div></div>
+            <div style="margin-top:14px;">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;">Kode Aktif</div>
+              <div id="codeList" style="display:flex;flex-direction:column;gap:6px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3><i class="fas fa-check-circle"></i> Admin Aktif</h3></div>
+          <div style="padding:13px;" id="actAdmList"></div>
+        </div>
+      </div>
+      <div class="acard">
+        <div class="acard-hd"><h3><i class="fas fa-user-clock"></i> Menunggu Persetujuan</h3><span class="pill p-pending" id="pendCount">0 pending</span></div>
+        <div style="padding:13px;" id="pendAdmList"></div>
+      </div>
+    </div>
+
+    <!-- REDEEM CODE ADMIN -->
+    <div class="atab-s" id="at-redeem">
+      <div class="adm-hd">
+        <div class="adm-hd-l"><div class="crumb">Admin / Kode Redeem</div><h1>Kode Redeem</h1><p>Buat & kelola kode diskon untuk pengguna.</p></div>
+        <button class="btn btn-gold btn-sm" onclick="openM('addRedeemMod')"><i class="fas fa-plus"></i> Buat Kode Baru</button>
+      </div>
+      <div class="acard">
+        <div class="acard-hd"><h3><i class="fas fa-ticket-alt"></i> Semua Kode Redeem</h3><span class="pill p-success" id="redeemActiveCount">0 aktif</span></div>
+        <div style="padding:14px;" id="redeemAdminList"></div>
+      </div>
+    </div>
+
+    <!-- PARTNERS -->
+    <div class="atab-s" id="at-partners">
+      <div class="adm-hd">
+        <div class="adm-hd-l"><div class="crumb">Admin / Partner</div><h1>Partner</h1><p>Kelola daftar mitra bisnis LUXE.</p></div>
+        <button class="btn btn-gold btn-sm" onclick="openM('addPartnerMod')"><i class="fas fa-plus"></i> Tambah Partner</button>
+      </div>
+      <div class="partner-grid" id="partnerAdminGrid"></div>
+    </div>
+
+    <!-- BROADCAST -->
+    <div class="atab-s" id="at-broadcast">
+      <div class="adm-hd"><div class="adm-hd-l"><div class="crumb">Admin / Notifikasi</div><h1>Kirim Notifikasi</h1></div></div>
+      <div class="g2">
+        <div style="background:var(--ink2);border:1px solid var(--mist2);border-radius:var(--r2);padding:24px;">
+          <h3 style="font-size:21px;margin-bottom:18px;"><i class="fas fa-bullhorn" style="color:var(--gold2);"></i> Broadcast ke Pengguna</h3>
+          <div class="fg"><label>Target</label><select id="bcTarget"><option value="all">Semua Pengguna</option><option value="user">Pengguna Saja</option></select></div>
+          <div class="fg"><label>Jenis</label><select id="bcType"><option value="promo">Promosi / Diskon</option><option value="system">Pengumuman Sistem</option><option value="order">Info Order</option></select></div>
+          <div class="fg"><label>Judul</label><input type="text" id="bcTitle" placeholder="Judul notifikasi..."></div>
+          <div class="fg"><label>Pesan</label><textarea id="bcMsg" placeholder="Tulis pesan lengkap untuk pengguna..."></textarea></div>
+          <button class="btn btn-gold btn-w" onclick="doBroadcast()"><i class="fas fa-paper-plane"></i> Kirim Sekarang</button>
+        </div>
+        <div class="acard" style="margin:0;">
+          <div class="acard-hd"><h3>Riwayat Broadcast</h3><span class="pill p-success" id="bcCount">0 terkirim</span></div>
+          <div style="padding:13px;max-height:420px;overflow-y:auto;" id="bcHistory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN LOG -->
+    <div class="atab-s" id="at-adminlog">
+      <div class="adm-hd">
+        <div class="adm-hd-l"><div class="crumb">Admin / Log Sistem</div><h1>Log Admin</h1><p>Riwayat aktivitas semua admin. Hanya bisa dilihat oleh Super Admin.</p></div>
+        <button class="btn btn-red btn-sm" onclick="clearAdminLog()"><i class="fas fa-trash"></i> Hapus Log</button>
+      </div>
+      <div class="sbtabs">
+        <button class="sbt on" onclick="logFil('all',this)">Semua</button>
+        <button class="sbt" onclick="logFil('info',this)">Info</button>
+        <button class="sbt" onclick="logFil('warn',this)">Warning</button>
+        <button class="sbt" onclick="logFil('danger',this)">Danger</button>
+      </div>
+      <div class="acard">
+        <div id="adminLogList" style="max-height:600px;overflow-y:auto;"></div>
+      </div>
+    </div>
+
+  </div><!-- /amain -->
+</div><!-- /pg-admin -->
+
+<!-- PANELS -->
+<div class="spanel" id="cartPanel">
+  <div class="sph"><h3><i class="fas fa-shopping-cart" style="font-size:18px;color:var(--gold2);margin-right:6px;"></i> Keranjang</h3><button class="spclose" onclick="closePanels()"><i class="fas fa-times"></i></button></div>
+  <div class="spbody" id="cartBody"></div>
+  <div class="spfoot" id="cartFoot" style="display:none;">
+    <div style="margin-bottom:10px;" id="redeemCartArea"></div>
+    <div class="ct-row"><span class="ct-label">Total</span><span class="ct-val" id="cartTotVal">Rp 0</span></div>
+    <button class="btn btn-gold btn-w" onclick="openCheckout()"><i class="fas fa-credit-card"></i> Bayar Sekarang</button>
+  </div>
+</div>
+<div class="spanel" id="notifPanel">
+  <div class="sph"><h3><i class="fas fa-bell" style="font-size:18px;color:var(--gold2);margin-right:6px;"></i> Notifikasi</h3><button class="spclose" onclick="closePanels()"><i class="fas fa-times"></i></button></div>
+  <div class="spbody" style="padding:0;" id="notifBody"></div>
+</div>
+
+<!-- MOBILE NAV -->
+<div id="mobnav"><div class="mnav" id="mobnavRow"></div></div>
+
+<!-- MODALS -->
+<!-- CHECKOUT -->
+<div class="ov" id="checkoutMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-shopping-bag" style="color:var(--gold2);"></i> Checkout</h2><p>Lengkapi data pengiriman & pembayaran</p></div>
+    <div id="ckSummary" style="background:var(--ink3);border-radius:var(--r);padding:14px;margin-bottom:14px;"></div>
+    <!-- Redeem at checkout -->
+    <div style="background:var(--gold4);border:1px solid rgba(201,169,110,.2);border-radius:var(--r);padding:12px;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;"><i class="fas fa-tag"></i> Kode Redeem</div>
+      <div style="display:flex;gap:7px;">
+        <input type="text" id="ckRedeemInput" placeholder="Punya kode diskon?" style="flex:1;background:var(--ink3);border:1px solid var(--mist2);color:var(--text);padding:9px 13px;border-radius:var(--r);font-size:13px;outline:none;">
+        <button class="btn btn-gold btn-sm" onclick="applyRedeemCheckout()"><i class="fas fa-tag"></i> Pakai</button>
+      </div>
+      <div id="redeemAppliedInfo" style="margin-top:8px;font-size:12.5px;"></div>
+    </div>
+    <div class="fg"><label>Nama Penerima</label><input type="text" id="ckName" placeholder="Nama lengkap penerima"></div>
+    <div class="fg"><label>Alamat Lengkap</label><textarea id="ckAddr" placeholder="Jalan, RT/RW, Kel, Kec, Kota, Kode Pos"></textarea></div>
+    <div class="fg"><label>Metode Pembayaran</label><div class="pmgrid" id="pmGrid"></div></div>
+    <div id="pmDetail" style="margin-bottom:14px;"></div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-ol" style="flex:1;" onclick="closeM('checkoutMod')">Batal</button>
+      <button class="btn btn-gold" style="flex:2;" onclick="placeOrder()"><i class="fas fa-check-circle"></i> Konfirmasi Pesanan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PRODUCT -->
+<div class="ov" id="addProdMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-plus-circle" style="color:var(--gold2);"></i> Tambah Produk</h2><p>Tambahkan produk baru ke katalog LUXE</p></div>
+    <div class="fg">
+      <label>Foto Produk</label>
+      <div class="img-upload-box" id="prodImgBox">
+        <div class="upload-icon"><i class="fas fa-camera" style="font-size:32px;opacity:.4;"></i></div>
+        <div class="upload-text">Klik atau seret foto produk</div>
+        <div class="upload-sub">JPG, PNG, WEBP · Max 5MB</div>
+        <input type="file" accept="image/*" onchange="handleProdImg(event)">
+        <img class="img-preview" id="prodImgPreview" style="display:none;">
+        <div class="img-preview-overlay" id="prodImgOv" style="display:none;"><span style="font-size:24px;color:#fff;"><i class="fas fa-sync-alt"></i> Ganti</span></div>
+      </div>
+    </div>
+    <div class="fg"><label>Nama Produk</label><input type="text" id="npName" placeholder="Nama produk"></div>
+    <div class="fg"><label>Deskripsi</label><input type="text" id="npDesc" placeholder="Deskripsi singkat"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Harga (Rp)</label><input type="number" id="npPrice" placeholder="150000"></div>
+      <div class="fg"><label>Harga Coret (opsional)</label><input type="number" id="npOrig" placeholder="200000"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Kategori</label><select id="npCat"><option>Fashion</option><option>Elektronik</option><option>Aksesoris</option><option>Rumah</option><option>Kecantikan</option><option>Lainnya</option></select></div>
+      <div class="fg"><label>Stok</label><input type="number" id="npStock" placeholder="100"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Emoji (fallback)</label><input type="text" id="npEmoji" placeholder="📦" style="font-size:20px;text-align:center;"></div>
+      <div class="fg"><label>Badge</label><input type="text" id="npBadge" placeholder="NEW / SALE / HOT"></div>
+    </div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-ol" style="flex:1;" onclick="closeM('addProdMod')">Batal</button>
+      <button class="btn btn-gold" style="flex:2;" onclick="addProduct()"><i class="fas fa-plus"></i> Tambah Produk</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT -->
+<div class="ov" id="editProdMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-edit" style="color:var(--gold2);"></i> Edit Produk</h2><p>Perbarui informasi produk</p></div>
+    <div class="fg">
+      <label>Foto Produk</label>
+      <div class="img-upload-box" id="editProdImgBox">
+        <div class="upload-icon"><i class="fas fa-camera" style="font-size:28px;opacity:.4;"></i></div>
+        <div class="upload-text">Klik untuk ganti foto</div>
+        <input type="file" accept="image/*" onchange="handleEditProdImg(event)">
+        <img class="img-preview" id="editProdImgPreview" style="display:none;">
+        <div class="img-preview-overlay" id="editProdImgOv" style="display:none;"><span style="font-size:24px;color:#fff;"><i class="fas fa-sync-alt"></i> Ganti</span></div>
+      </div>
+    </div>
+    <input type="hidden" id="epId">
+    <div class="fg"><label>Nama</label><input type="text" id="epName"></div>
+    <div class="fg"><label>Deskripsi</label><input type="text" id="epDesc"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Harga</label><input type="number" id="epPrice"></div>
+      <div class="fg"><label>Harga Coret</label><input type="number" id="epOrig"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Kategori</label><select id="epCat"><option>Fashion</option><option>Elektronik</option><option>Aksesoris</option><option>Rumah</option><option>Kecantikan</option><option>Lainnya</option></select></div>
+      <div class="fg"><label>Stok</label><input type="number" id="epStock"></div>
+    </div>
+    <div class="fg"><label>Badge</label><input type="text" id="epBadge"></div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-ol" style="flex:1;" onclick="closeM('editProdMod')">Batal</button>
+      <button class="btn btn-gold" style="flex:2;" onclick="saveEditProd()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL -->
+<div class="ov" id="ordDetailMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-file-invoice" style="color:var(--gold2);"></i> Detail Pesanan</h2><p id="ordDetSub"></p></div>
+    <div id="ordDetBody"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;" id="ordDetActs"></div>
+  </div>
+</div>
+
+<!-- ADD REDEEM CODE -->
+<div class="ov" id="addRedeemMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-ticket-alt" style="color:var(--gold2);"></i> Buat Kode Redeem</h2><p>Buat kode diskon untuk pengguna</p></div>
+    <div class="fg"><label>Kode (kosongkan = auto generate)</label><input type="text" id="rcCode" placeholder="LUXE50OFF" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;"></div>
+    <div class="fg"><label>Tipe Diskon</label><select id="rcType"><option value="percent">Persen (%)</option><option value="fixed">Nominal (Rp)</option></select></div>
+    <div class="fg"><label>Nilai Diskon</label><input type="number" id="rcValue" placeholder="10 (untuk 10%) atau 50000 (untuk Rp50.000)"></div>
+    <div class="fg"><label>Maksimal Pemakaian (0 = unlimited)</label><input type="number" id="rcMaxUse" placeholder="100" value="0"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="fg"><label>Berlaku Mulai</label><input type="datetime-local" id="rcStartDate"></div>
+      <div class="fg"><label>Kadaluarsa</label><input type="datetime-local" id="rcExpDate"></div>
+    </div>
+    <div class="fg"><label>Deskripsi</label><input type="text" id="rcDesc" placeholder="Diskon spesial..."></div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-ol" style="flex:1;" onclick="closeM('addRedeemMod')">Batal</button>
+      <button class="btn btn-gold" style="flex:2;" onclick="createRedeemCode()"><i class="fas fa-plus"></i> Buat Kode</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PARTNER -->
+<div class="ov" id="addPartnerMod">
+  <div class="modal">
+    <div class="modal-hd"><h2><i class="fas fa-handshake" style="color:var(--gold2);"></i> Tambah Partner</h2><p>Tambahkan mitra bisnis baru</p></div>
+    <div class="fg">
+      <label>Logo Partner</label>
+      <div class="img-upload-box" id="partnerImgBox" style="height:130px;">
+        <div class="upload-icon"><i class="fas fa-image" style="font-size:28px;opacity:.4;"></i></div>
+        <div class="upload-text">Upload logo partner</div>
+        <div class="upload-sub">JPG, PNG · Max 3MB</div>
+        <input type="file" accept="image/*" onchange="handlePartnerImg(event)">
+        <img class="img-preview" id="partnerImgPreview" style="display:none;">
+        <div class="img-preview-overlay" id="partnerImgOv" style="display:none;"><span style="font-size:18px;color:#fff;"><i class="fas fa-sync-alt"></i></span></div>
+      </div>
+    </div>
+    <div class="fg"><label>Nama Partner</label><input type="text" id="npPartnerName" placeholder="Nama mitra..."></div>
+    <div class="fg"><label>Deskripsi</label><input type="text" id="npPartnerDesc" placeholder="Layanan / keterangan singkat..."></div>
+    <div class="fg"><label>Emoji (fallback jika tanpa logo)</label><input type="text" id="npPartnerEmoji" placeholder="🏢" style="font-size:20px;text-align:center;"></div>
+    <div style="display:flex;gap:9px;">
+      <button class="btn btn-ol" style="flex:1;" onclick="closeM('addPartnerMod')">Batal</button>
+      <button class="btn btn-gold" style="flex:2;" onclick="addPartner()"><i class="fas fa-plus"></i> Tambah</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STORAGE KEYS
+// ══════════════════════════════════════
+const STORE_KEY = 'luxe_data_v3';
+const SESS_KEY  = 'luxe_sess_v3';
+const SESS_LIMIT  = 60 * 60 * 1000;      // 1 hour active session
+const INACT_LIMIT = 2 * 24 * 60 * 60 * 1000; // 2 days inactivity auto-logout
+const WARN_AT   = 5 * 60 * 1000;
+
+let sessWarningInt = null;
+let sessTickInt    = null;
+let sessWarnShown  = false;
+let clockInt       = null;
+let newProdImg     = null;
+let editProdImg    = null;
+let partnerImg     = null;
+let appliedRedeem  = null;
+let currentLogFilter = 'all';
+
+// ══════════════════════════════════════
+// DEFAULT STATE
+// ══════════════════════════════════════
+const DEFAULT_STATE = {
+  orders:[],
+  notifs:[],
+  broadcasts:[],
+  adminCodes:[],
+  pendAdmins:[],
+  ordFilter:'all',
+  catFilter:'Semua',
+  activity:[],
+  adminLog:[],
+  redeemCodes:[],
+  partners:[
+    {id:'p1',name:'JNE Express',desc:'Pengiriman Reguler & Express',emoji:'🚛',img:null,addedAt:now()},
+    {id:'p2',name:'SiCepat',desc:'Pengiriman Cepat Seluruh Indonesia',emoji:'⚡',img:null,addedAt:now()},
+    {id:'p3',name:'GoPay',desc:'Dompet Digital Gojek',emoji:'💚',img:null,addedAt:now()},
+  ],
+  products:[
+    {id:1,name:'Sneakers Urban',desc:'Sepatu kasual premium dengan sol berkualitas tinggi.',price:450000,orig:580000,emoji:'👟',cat:'Fashion',badge:'HOT',stock:24,img:null},
+    {id:2,name:'Hoodie Oversized',desc:'Hoodie premium bahan cotton fleece tebal & hangat.',price:280000,orig:350000,emoji:'🧥',cat:'Fashion',badge:'NEW',stock:40,img:null},
+    {id:3,name:'Earphone Wireless',desc:'Suara kristal jernih dengan noise-cancelling.',price:650000,orig:0,emoji:'🎧',cat:'Elektronik',badge:'',stock:18,img:null},
+    {id:4,name:'Mug Ceramic Gold',desc:'Mug keramik premium dengan lapisan gold elegan.',price:95000,orig:0,emoji:'☕',cat:'Rumah',badge:'',stock:60,img:null},
+    {id:5,name:'Backpack Leather',desc:'Tas ransel kulit premium anti air, 30L.',price:580000,orig:750000,emoji:'🎒',cat:'Aksesoris',badge:'SALE',stock:12,img:null},
+    {id:6,name:'Smartwatch Elite',desc:'Health tracking + layar AMOLED berkelas.',price:1290000,orig:0,emoji:'⌚',cat:'Elektronik',badge:'HOT',stock:9,img:null},
+    {id:7,name:'Sunglasses Retro',desc:'Kacamata UV400 frame metal premium.',price:175000,orig:220000,emoji:'🕶️',cat:'Aksesoris',badge:'NEW',stock:35,img:null},
+    {id:8,name:'Tumbler Premium',desc:'Stainless double wall 600ml, 24 jam.',price:135000,orig:0,emoji:'🍶',cat:'Rumah',badge:'',stock:50,img:null},
+    {id:9,name:'Serum Vitamin C',desc:'Brightening 20% Vitamin C murni, 7 hari terlihat.',price:220000,orig:280000,emoji:'✨',cat:'Kecantikan',badge:'SALE',stock:30,img:null},
+    {id:10,name:'Celana Linen',desc:'Celana linen premium breathable, formal & kasual.',price:320000,orig:0,emoji:'👖',cat:'Fashion',badge:'',stock:22,img:null},
+  ],
+  users:[
+    {id:'u1',name:'Demo User',email:'user@demo.com',pass:'123456',role:'user',joined:fmtDate(),avatar:null,username:'demouser',bio:'',phone:'',address:'',cart:[],wish:[],payHistory:[],redeemedCodes:[]},
+  ],
+  admins:[
+    {id:'a1',name:'Super Admin',email:'admin@demo.com',pass:'admin123',role:'superadmin',avatar:null,username:'superadmin',bio:'',phone:'',address:''},
+  ],
+};
+
+// ══════════════════════════════════════
+// PERSISTENT STATE (localStorage)
+// ══════════════════════════════════════
+let S = {};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      S = deepMerge(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed);
+    } else {
+      S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+  } catch(e) {
+    S = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  }
+}
+
+function saveState() {
+  try {
+    // Don't save current user session in state, only data
+    const toSave = {...S};
+    delete toSave.currentUser;
+    localStorage.setItem(STORE_KEY, JSON.stringify(toSave));
+  } catch(e) { console.warn('State save failed', e); }
+}
+
+function deepMerge(target, source) {
+  for (const key of Object.keys(source)) {
+    if (Array.isArray(source[key])) {
+      target[key] = source[key];
+    } else if (source[key] && typeof source[key] === 'object') {
+      if (!target[key]) target[key] = {};
+      deepMerge(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+
+// Current user (runtime only, pulled from session)
+let CURRENT_USER = null;
+// Cart & wish are stored per-user in S.users
+function getUser() { return CURRENT_USER; }
+function getUserCart() {
+  const u = getUser();
+  if (!u) return [];
+  const found = S.users.find(x=>x.id===u.id);
+  return found ? (found.cart||[]) : [];
+}
+function getUserWish() {
+  const u = getUser();
+  if (!u) return [];
+  const found = S.users.find(x=>x.id===u.id);
+  return found ? (found.wish||[]) : [];
+}
+function setUserCart(cart) {
+  const u = getUser();
+  if (!u) return;
+  const idx = S.users.findIndex(x=>x.id===u.id);
+  if (idx>=0) { S.users[idx].cart = cart; saveState(); }
+}
+function setUserWish(wish) {
+  const u = getUser();
+  if (!u) return;
+  const idx = S.users.findIndex(x=>x.id===u.id);
+  if (idx>=0) { S.users[idx].wish = wish; saveState(); }
+}
+
+const PAY=[
+  {id:'dana',icon:'💙',name:'DANA',desc:'Dompet Digital'},
+  {id:'gopay',icon:'💚',name:'GoPay',desc:'Dompet Digital'},
+  {id:'ovo',icon:'💜',name:'OVO',desc:'Dompet Digital'},
+  {id:'shopeepay',icon:'🧡',name:'ShopeePay',desc:'Dompet Digital'},
+  {id:'pulsa',icon:'📱',name:'Pulsa',desc:'Telkomsel / XL / Indosat'},
+  {id:'transfer',icon:'🏦',name:'Transfer Bank',desc:'BCA / Mandiri / BRI / BNI'},
+  {id:'qris',icon:'📲',name:'QRIS',desc:'Scan & bayar'},
+  {id:'cod',icon:'🚚',name:'COD',desc:'Bayar di tempat'},
+];
+
+// ══════════════════════════════════════
+// SESSION MANAGEMENT
+// ══════════════════════════════════════
+function saveSession(user) {
+  try {
+    localStorage.setItem(SESS_KEY, JSON.stringify({uid:user.id,role:user.role,at:Date.now(),lastActive:Date.now()}));
+  } catch(e){}
+}
+function updateSessionActivity() {
+  try {
+    const raw = localStorage.getItem(SESS_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    s.lastActive = Date.now();
+    s.at = Date.now(); // reset 1hr timer on activity
+    localStorage.setItem(SESS_KEY, JSON.stringify(s));
+  } catch(e){}
+}
+function clearSession() {
+  try { localStorage.removeItem(SESS_KEY); } catch(e){}
+}
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(SESS_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    // Check 2-day inactivity
+    if (Date.now() - s.lastActive > INACT_LIMIT) { clearSession(); return null; }
+    // Check 1hr active session
+    if (Date.now() - s.at > SESS_LIMIT) { clearSession(); return null; }
+    return s;
+  } catch(e) { return null; }
+}
+function renewSession() {
+  if (!CURRENT_USER) return;
+  updateSessionActivity();
+  hideSessionBar();
+  toast('✦ Sesi diperpanjang!','ok');
+}
+function showSessionBar() {
+  const bar = document.getElementById('sessionBar');
+  bar.classList.add('show');
+  sessWarnShown = true;
+  let sec = 300;
+  sessTickInt = setInterval(()=>{
+    sec--;
+    const el = document.getElementById('sessTick');
+    if (el) { const m=Math.floor(sec/60),s=sec%60; el.textContent=`${m}:${s.toString().padStart(2,'0')}`; }
+    if (sec<=0) { clearInterval(sessTickInt); autoLogout(); }
+  },1000);
+}
+function hideSessionBar() {
+  document.getElementById('sessionBar').classList.remove('show');
+  sessWarnShown = false;
+  clearInterval(sessTickInt);
+}
+function autoLogout() {
+  clearSession();
+  CURRENT_USER = null;
+  closePanels();
+  showPage('auth');
+  toast('Sesi berakhir. Silakan masuk kembali.','warn');
+}
+function startSessWatch() {
+  if (sessWarningInt) clearInterval(sessWarningInt);
+  sessWarningInt = setInterval(()=>{
+    if (!CURRENT_USER) return;
+    try {
+      const raw = localStorage.getItem(SESS_KEY);
+      if (!raw) { autoLogout(); return; }
+      const s = JSON.parse(raw);
+      if (Date.now() - s.lastActive > INACT_LIMIT) { autoLogout(); return; }
+      if (Date.now() - s.at > SESS_LIMIT) { autoLogout(); return; }
+      if (Date.now() - s.at > SESS_LIMIT - WARN_AT && !sessWarnShown) showSessionBar();
+    } catch(e){}
+  }, 15000);
+  // Update activity on any user interaction
+  document.addEventListener('click', updateSessionActivity, {passive:true});
+  document.addEventListener('keydown', updateSessionActivity, {passive:true});
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function rp(n){return'Rp '+Number(n).toLocaleString('id-ID');}
+function uid(){return'#'+Math.random().toString(36).substr(2,9).toUpperCase();}
+function fmtDate(){return new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
+function now(){return new Date().toLocaleString('id-ID');}
+
+function toast(msg,type=''){
+  const box=document.getElementById('toasts');
+  const el=document.createElement('div');
+  el.className='toast '+(type==='ok'?'ok':type==='err'?'err':type==='warn'?'warn':'');
+  const ic={ok:'<i class="fas fa-check-circle"></i>',err:'<i class="fas fa-times-circle"></i>',warn:'<i class="fas fa-exclamation-triangle"></i>','':`<i class="fas fa-star"></i>`};
+  el.innerHTML=`<span style="font-size:16px;flex-shrink:0;">${ic[type]||ic['']}</span><span>${msg}</span>`;
+  box.appendChild(el);
+  setTimeout(()=>{el.style.animation='tOut .28s ease forwards';setTimeout(()=>el.remove(),280);},3600);
+}
+
+function addActivity(icon,title,sub,color='var(--gold)'){
+  S.activity.unshift({icon,title,sub,time:now(),color});
+  if(S.activity.length>30) S.activity.pop();
+  saveState();
+}
+
+function addAdminLog(adminName,action,detail,level='info') {
+  S.adminLog.unshift({id:'log'+Date.now(),adminName,action,detail,level,time:now()});
+  if(S.adminLog.length>200) S.adminLog.pop();
+  saveState();
+}
+
+function avHTML(u,size=30,radius='8px'){
+  if(u&&u.avatar) return `<div style="width:${size}px;height:${size}px;border-radius:${radius};overflow:hidden;flex-shrink:0;"><img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;"></div>`;
+  const initials=(u?.name||'?').charAt(0).toUpperCase();
+  return `<div class="uav-txt" style="width:${size}px;height:${size}px;border-radius:${radius};font-size:${Math.round(size*.45)}px;">${initials}</div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE ROUTER
+// ══════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('show'));
+  document.getElementById('pg-'+id).classList.add('show');
+  const nav=document.getElementById('topnav');
+  const mn=document.getElementById('mobnav');
+  const sbBtn=document.getElementById('sbToggle');
+  if(id==='auth'){
+    nav.classList.remove('show');
+    mn.style.display='none';
+    if(sbBtn)sbBtn.style.display='none';
+  } else if(id==='admin'){
+    nav.classList.add('show');
+    mn.style.display='none';
+    if(sbBtn)sbBtn.style.display=window.innerWidth<=768?'flex':'none';
+  } else {
+    nav.classList.add('show');
+    mn.style.display=window.innerWidth<=768?'block':'none';
+    if(sbBtn)sbBtn.style.display='none';
+  }
+  closePanels();
+  buildNav(id);buildMobNav(id);
+  if(id==='shop') renderShop();
+  else if(id==='orders') renderOrders();
+  else if(id==='wish') renderWish();
+  else if(id==='admin') renderAdmin();
+  else if(id==='profile') renderProfile();
+  else if(id==='payhist') renderPayHistory();
+}
+function goTo(p){
+  document.getElementById('udrop').classList.remove('show');
+  showPage(p);
+}
+
+// ══════════════════════════════════════
+// NAV
+// ══════════════════════════════════════
+function buildNav(page){
+  const r=document.getElementById('tnRight');
+  if(!CURRENT_USER||page==='auth'){r.innerHTML='';return;}
+  if(CURRENT_USER.role==='user'){
+    r.innerHTML=`
+      <button class="tn-ic desktop" onclick="toggleNotif()" style="position:relative;"><i class="fas fa-bell"></i><span class="rdot" id="nDot"></span></button>
+      <button class="cpill desktop" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i><span class="cn" id="cartCnt">0</span></button>
+      <div class="uchip" onclick="toggleDD()">
+        ${CURRENT_USER.avatar?`<div class="uav" style="border-radius:8px;overflow:hidden;"><img src="${CURRENT_USER.avatar}" style="width:100%;height:100%;object-fit:cover;"></div>`:`<div class="uav"><div class="uav-txt">${CURRENT_USER.name.charAt(0)}</div></div>`}
+        <span class="uname-txt">${CURRENT_USER.name.split(' ')[0]}</span>
+      </div>`;
+  } else {
+    r.innerHTML=`
+      <div class="uchip" onclick="toggleDD()">
+        ${CURRENT_USER.avatar?`<div class="uav" style="border-radius:8px;overflow:hidden;"><img src="${CURRENT_USER.avatar}" style="width:100%;height:100%;object-fit:cover;"></div>`:`<div class="uav"><div class="uav-txt" style="background:linear-gradient(135deg,var(--ru),#c0392b);color:#fff;"><i class="fas fa-shield-alt"></i></div></div>`}
+        <span class="uname-txt">${CURRENT_USER.name.split(' ')[0]}</span>
+      </div>`;
+  }
+  const udAvLg=document.getElementById('udAvLg');
+  if(udAvLg)udAvLg.innerHTML=CURRENT_USER.avatar?`<img src="${CURRENT_USER.avatar}" style="width:40px;height:40px;object-fit:cover;border-radius:11px;">`:avHTML(CURRENT_USER,40,'11px');
+  document.getElementById('udName').textContent=CURRENT_USER.name+(CURRENT_USER.username?` (@${CURRENT_USER.username})`:'');
+  document.getElementById('udEmail').textContent=CURRENT_USER.email;
+  syncCart();syncNDot();
+}
+
+function buildMobNav(page){
+  const row=document.getElementById('mobnavRow');
+  if(!CURRENT_USER||CURRENT_USER.role!=='user'){row.innerHTML='';return;}
+  const items=[
+    {icon:'fa-home',label:'Toko',p:'shop'},
+    {icon:'fa-box',label:'Pesanan',p:'orders'},
+    {icon:'fa-heart',label:'Wishlist',p:'wish'},
+    {icon:'fa-bell',label:'Notif',p:'notif',dot:'mND'},
+    {icon:'fa-shopping-cart',label:'Keranjang',p:'cart',dot:'mCD'},
+  ];
+  row.innerHTML=items.map(it=>`
+    <div class="mni ${(page===it.p)?'on':''}" onclick="mnClick('${it.p}')">
+      <i class="fas ${it.icon} mi-fa"></i>
+      <span>${it.label}</span>
+      ${it.dot?`<span class="md" id="${it.dot}"></span>`:''}
+    </div>`).join('');
+  syncCart();syncNDot();
+}
+function mnClick(p){if(p==='cart')toggleCart();else if(p==='notif')toggleNotif();else showPage(p);}
+function toggleDD(){document.getElementById('udrop').classList.toggle('show');}
+document.addEventListener('click',e=>{
+  const dd=document.getElementById('udrop');
+  if(dd&&!e.target.closest('.uchip')&&!e.target.closest('#udrop'))dd.classList.remove('show');
+});
+
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+function authSwitch(w,btn){
+  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('frm-login').style.display=w==='login'?'block':'none';
+  document.getElementById('frm-reg').style.display=w==='reg'?'block':'none';
+}
+function doLogin(){
+  const email=document.getElementById('liEmail').value.trim();
+  const pass=document.getElementById('liPass').value;
+  if(!email||!pass){toast('Isi email dan password!','warn');return;}
+  const u=[...S.users,...S.admins].find(x=>x.email===email&&x.pass===pass);
+  if(!u){toast('Email atau password salah!','err');return;}
+  loginOK(u);
+}
+function quickLogin(type){loginOK(type==='user'?S.users[0]:S.admins[0]);}
+function loginOK(u){
+  CURRENT_USER=u;
+  saveSession(u);
+  startSessWatch();
+  addActivity('<i class="fas fa-sign-in-alt"></i>',`${u.name} login`,`via ${u.role}`,'var(--em)');
+  addAdminLog(u.name,'LOGIN',`Login berhasil sebagai ${u.role}`,'info');
+  if(u.role==='superadmin'||u.role==='admin'){
+    refreshSidebarUser();
+    showPage('admin');
+  } else {
+    showPage('shop');
+    setTimeout(()=>addNotif({type:'promo',title:'✦ Selamat Datang di LUXE!',msg:'Belanja sekarang dan nikmati pengalaman premium!',time:now()}),600);
+  }
+  toast(`Selamat datang, ${u.name}! ✦`,'ok');
+}
+function doLogout(){
+  if(CURRENT_USER) {
+    addAdminLog(CURRENT_USER.name,'LOGOUT',`Logout manual`,'info');
+  }
+  clearSession();
+  clearInterval(sessWarningInt);clearInterval(sessTickInt);clearInterval(clockInt);
+  hideSessionBar();
+  CURRENT_USER=null;
+  document.getElementById('udrop').classList.remove('show');
+  closePanels();showPage('auth');
+  toast('Berhasil keluar.','');
+}
+function doRegister(){
+  const n=document.getElementById('rnName').value.trim();
+  const e=document.getElementById('rnEmail').value.trim();
+  const p=document.getElementById('rnPass').value;
+  if(!n||!e||!p){toast('Lengkapi semua field!','warn');return;}
+  if(p.length<6){toast('Password minimal 6 karakter!','warn');return;}
+  // 1 akun per email
+  if([...S.users,...S.admins].find(u=>u.email===e)){toast('Email sudah terdaftar!','err');return;}
+  const newUser={id:'u'+Date.now(),name:n,email:e,pass:p,role:'user',joined:fmtDate(),avatar:null,username:'',bio:'',phone:'',address:'',cart:[],wish:[],payHistory:[],redeemedCodes:[]};
+  S.users.push(newUser);
+  saveState();
+  toast('Akun berhasil dibuat! Silakan masuk.','ok');
+  authSwitch('login',document.querySelectorAll('.atab')[0]);
+}
+function doAdminReg(){
+  const n=document.getElementById('rnName').value.trim();
+  const e=document.getElementById('rnEmail').value.trim();
+  const p=document.getElementById('rnPass').value;
+  const code=document.getElementById('rnCode').value.trim().toUpperCase();
+  if(!n||!e||!p){toast('Lengkapi data diri!','warn');return;}
+  if(!code){toast('Masukkan kode admin!','warn');return;}
+  if([...S.users,...S.admins].find(u=>u.email===e)){toast('Email sudah terdaftar!','err');return;}
+  const valid=S.adminCodes.find(c=>c.code===code&&!c.used);
+  if(!valid){toast('Kode tidak valid atau sudah digunakan!','err');return;}
+  S.pendAdmins.push({id:'pa'+Date.now(),name:n,email:e,pass:p,code,at:now()});
+  valid.used=true;
+  saveState();
+  toast('Permintaan terkirim! Tunggu persetujuan admin.','ok');
+  authSwitch('login',document.querySelectorAll('.atab')[0]);
+}
+
+// ══════════════════════════════════════
+// PROFILE
+// ══════════════════════════════════════
+function handleAvatarUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Ukuran foto maks 5MB!','warn');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=document.getElementById('profileAvImg');
+    img.src=ev.target.result;img.style.display='block';
+    document.getElementById('profileAvTxt').style.display='none';
+    CURRENT_USER.avatar=ev.target.result;
+    // Sync to storage
+    const arr=CURRENT_USER.role==='user'?S.users:S.admins;
+    const idx=arr.findIndex(u=>u.id===CURRENT_USER.id);
+    if(idx>=0)arr[idx].avatar=ev.target.result;
+    saveState();
+    buildNav(document.querySelector('.pg.show').id.replace('pg-',''));
+    toast('Foto profil diperbarui!','ok');
+  };
+  reader.readAsDataURL(file);
+}
+function renderProfile(){
+  if(!CURRENT_USER)return;
+  const u=CURRENT_USER;
+  const avTxt=document.getElementById('profileAvTxt');
+  const avImg=document.getElementById('profileAvImg');
+  if(u.avatar){avImg.src=u.avatar;avImg.style.display='block';avTxt.style.display='none';}
+  else{avTxt.textContent=u.name.charAt(0).toUpperCase();avTxt.style.display='flex';avImg.style.display='none';}
+  document.getElementById('profName').textContent=u.name;
+  document.getElementById('profRole').textContent=u.role==='superadmin'?'Super Admin':u.role==='admin'?'Admin':'Pengguna';
+  document.getElementById('editName').value=u.name||'';
+  document.getElementById('editUsername').value=u.username||'';
+  document.getElementById('editBio').value=u.bio||'';
+  document.getElementById('editPhone').value=u.phone||'';
+  document.getElementById('editAddress').value=u.address||'';
+  document.getElementById('editPass').value='';
+  renderRedeemedList();
+}
+function saveProfile(){
+  if(!CURRENT_USER)return;
+  const name=document.getElementById('editName').value.trim();
+  const username=document.getElementById('editUsername').value.trim().replace(/\s/g,'');
+  const bio=document.getElementById('editBio').value.trim();
+  const phone=document.getElementById('editPhone').value.trim();
+  const address=document.getElementById('editAddress').value.trim();
+  const pass=document.getElementById('editPass').value;
+  if(!name){toast('Nama tidak boleh kosong!','warn');return;}
+  CURRENT_USER.name=name;CURRENT_USER.username=username;CURRENT_USER.bio=bio;CURRENT_USER.phone=phone;CURRENT_USER.address=address;
+  if(pass){if(pass.length<6){toast('Password baru min 6 karakter!','warn');return;}CURRENT_USER.pass=pass;}
+  const arr=CURRENT_USER.role==='user'?S.users:S.admins;
+  const idx=arr.findIndex(u=>u.id===CURRENT_USER.id);
+  if(idx>=0)arr[idx]={...arr[idx],...CURRENT_USER};
+  saveState();
+  document.getElementById('profName').textContent=name;
+  buildNav(document.querySelector('.pg.show').id.replace('pg-',''));
+  toast('Profil berhasil disimpan!','ok');
+  addActivity('<i class="fas fa-user-edit"></i>',`${name} memperbarui profil`,'','var(--sa)');
+}
+
+// ══════════════════════════════════════
+// REDEEM CODE SYSTEM
+// ══════════════════════════════════════
+function createRedeemCode(){
+  let code=document.getElementById('rcCode').value.trim().toUpperCase();
+  if(!code)code='LUXE-'+Math.random().toString(36).substr(2,6).toUpperCase();
+  const type=document.getElementById('rcType').value;
+  const value=parseInt(document.getElementById('rcValue').value)||0;
+  const maxUse=parseInt(document.getElementById('rcMaxUse').value)||0;
+  const startDate=document.getElementById('rcStartDate').value;
+  const expDate=document.getElementById('rcExpDate').value;
+  const desc=document.getElementById('rcDesc').value.trim();
+  if(!value){toast('Nilai diskon harus diisi!','warn');return;}
+  if(S.redeemCodes.find(r=>r.code===code)){toast('Kode sudah ada!','err');return;}
+  const rc={id:'rc'+Date.now(),code,type,value,maxUse,usedCount:0,startDate,expDate,desc,createdAt:now(),active:true};
+  S.redeemCodes.push(rc);
+  saveState();
+  closeM('addRedeemMod');
+  ['rcCode','rcValue','rcDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rcMaxUse').value='0';
+  renderRedeemAdmin();
+  toast(`Kode "${code}" berhasil dibuat!`,'ok');
+  addAdminLog(CURRENT_USER?.name||'Admin','CREATE_REDEEM',`Kode: ${code} | ${type==='percent'?value+'%':rp(value)} diskon`,'info');
+}
+function isRedeemValid(rc){
+  if(!rc.active)return false;
+  const now2=Date.now();
+  if(rc.startDate&&now2<new Date(rc.startDate).getTime())return false;
+  if(rc.expDate&&now2>new Date(rc.expDate).getTime())return false;
+  if(rc.maxUse>0&&rc.usedCount>=rc.maxUse)return false;
+  return true;
+}
+function doRedeem(){
+  const code=document.getElementById('redeemInput').value.trim().toUpperCase();
+  if(!code){toast('Masukkan kode redeem!','warn');return;}
+  const rc=S.redeemCodes.find(r=>r.code===code);
+  if(!rc){toast('Kode tidak ditemukan!','err');return;}
+  if(!isRedeemValid(rc)){toast('Kode sudah kadaluarsa atau tidak aktif!','err');return;}
+  // Check user already redeemed
+  const uIdx=S.users.findIndex(u=>u.id===CURRENT_USER?.id);
+  if(uIdx<0)return;
+  const already=(S.users[uIdx].redeemedCodes||[]).find(r=>r.code===code);
+  if(already){toast('Kamu sudah pernah menggunakan kode ini!','warn');return;}
+  // Add to user
+  if(!S.users[uIdx].redeemedCodes)S.users[uIdx].redeemedCodes=[];
+  S.users[uIdx].redeemedCodes.push({code,value:rc.value,type:rc.type,redeemedAt:now(),desc:rc.desc});
+  rc.usedCount=(rc.usedCount||0)+1;
+  CURRENT_USER.redeemedCodes=S.users[uIdx].redeemedCodes;
+  saveState();
+  document.getElementById('redeemInput').value='';
+  renderRedeemedList();
+  toast(`Kode "${code}" berhasil diredeem! Diskon ${rc.type==='percent'?rc.value+'%':rp(rc.value)} aktif.`,'ok');
+}
+function renderRedeemedList(){
+  const el=document.getElementById('redeemedList');if(!el)return;
+  const uIdx=S.users.findIndex(u=>u.id===CURRENT_USER?.id);
+  const list=(uIdx>=0?(S.users[uIdx].redeemedCodes||[]):[]);
+  if(!list.length){el.innerHTML='<div style="font-size:12.5px;color:var(--text3);margin-top:8px;">Belum ada kode yang diredeem.</div>';return;}
+  el.innerHTML=list.map(r=>`
+    <div class="redeem-item">
+      <span class="code-tag">${r.code}</span>
+      <span class="disc-tag">${r.type==='percent'?r.value+'% OFF':rp(r.value)+' OFF'}</span>
+      <span style="font-size:11px;color:var(--text3);">${r.redeemedAt}</span>
+    </div>`).join('');
+}
+function applyRedeemCheckout(){
+  const code=document.getElementById('ckRedeemInput').value.trim().toUpperCase();
+  const infoEl=document.getElementById('redeemAppliedInfo');
+  if(!code){toast('Masukkan kode!','warn');return;}
+  // Check user redeemed codes
+  const uIdx=S.users.findIndex(u=>u.id===CURRENT_USER?.id);
+  const redeemed=(uIdx>=0?(S.users[uIdx].redeemedCodes||[]):[]);
+  const userRedeem=redeemed.find(r=>r.code===code);
+  if(!userRedeem){toast('Kode tidak ditemukan di akun kamu!','err');return;}
+  appliedRedeem=userRedeem;
+  const disc=userRedeem.type==='percent'?`${userRedeem.value}% dari total`:rp(userRedeem.value);
+  infoEl.innerHTML=`<span style="color:var(--em);"><i class="fas fa-check-circle"></i> Diskon ${disc} aktif!</span>`;
+  toast('Kode diskon diterapkan!','ok');
+  updateCkSummary();
+}
+function updateCkSummary(){
+  const base=cartTotal();
+  let disc=0;
+  if(appliedRedeem){
+    if(appliedRedeem.type==='percent') disc=Math.round(base*appliedRedeem.value/100);
+    else disc=Math.min(appliedRedeem.value,base);
+  }
+  const final=base-disc;
+  const summaryEl=document.getElementById('ckSummary');
+  if(!summaryEl)return;
+  let html=getUserCart().map(i=>`<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--text2);border-bottom:1px solid var(--mist2);"><span>${i.emoji||'📦'} ${i.name} ×${i.qty}</span><span>${rp(i.price*i.qty)}</span></div>`).join('');
+  if(disc>0) html+=`<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:var(--em);"><span><i class="fas fa-tag"></i> Diskon (${appliedRedeem.code})</span><span>-${rp(disc)}</span></div>`;
+  html+=`<div style="display:flex;justify-content:space-between;padding-top:10px;font-weight:700;font-size:15px;"><span>Total</span><span style="color:var(--gold2);">${rp(final)}</span></div>`;
+  summaryEl.innerHTML=html;
+}
+function renderRedeemAdmin(){
+  const el=document.getElementById('redeemAdminList');if(!el)return;
+  const active=S.redeemCodes.filter(r=>isRedeemValid(r)).length;
+  const acEl=document.getElementById('redeemActiveCount');
+  if(acEl)acEl.textContent=active+' aktif';
+  if(!S.redeemCodes.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);">Belum ada kode redeem.</div>';return;}
+  el.innerHTML=S.redeemCodes.map(r=>`
+    <div class="rcode-item">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span class="rcode-tag">${r.code}</span>
+          <span class="${isRedeemValid(r)?'pill p-success':'pill p-expired'}">${isRedeemValid(r)?'Aktif':'Kadaluarsa'}</span>
+        </div>
+        <div class="rcode-meta">${r.desc||'—'} · Dipakai: ${r.usedCount||0}${r.maxUse>0?'/'+r.maxUse:''}</div>
+        ${r.expDate?`<div class="rcode-meta"><i class="fas fa-clock"></i> Exp: ${new Date(r.expDate).toLocaleString('id-ID')}</div>`:''}
+      </div>
+      <div class="rcode-disc">${r.type==='percent'?r.value+'% OFF':rp(r.value)+' OFF'}</div>
+      <button class="btn btn-red btn-sm" onclick="deleteRedeem('${r.id}')"><i class="fas fa-trash"></i></button>
+    </div>`).join('');
+}
+function deleteRedeem(id){
+  S.redeemCodes=S.redeemCodes.filter(r=>r.id!==id);
+  saveState();renderRedeemAdmin();toast('Kode dihapus.','');
+  addAdminLog(CURRENT_USER?.name||'Admin','DELETE_REDEEM',`Kode ID: ${id}`,'warn');
+}
+
+// ══════════════════════════════════════
+// SHOP
+// ══════════════════════════════════════
+const CATS=['Semua','Fashion','Elektronik','Aksesoris','Rumah','Kecantikan','Lainnya'];
+function renderShop(){
+  const fr=document.getElementById('filtersRow');
+  fr.innerHTML=CATS.map(c=>`<button class="fc ${c===S.catFilter?'on':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+  renderProds();
+}
+function setCat(c){S.catFilter=c;renderShop();}
+function renderProds(){
+  const q=(document.getElementById('srch')||{value:''}).value.toLowerCase().trim();
+  let prods=S.products;
+  if(S.catFilter!=='Semua')prods=prods.filter(p=>p.cat===S.catFilter);
+  if(q)prods=prods.filter(p=>p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  const g=document.getElementById('prodGrid');if(!g)return;
+  if(!prods.length){g.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-search" style="font-size:40px;"></i></div><p>Produk tidak ditemukan.</p></div>';return;}
+  g.innerHTML=prods.map(p=>prodCardHTML(p,true)).join('');
+}
+function prodCardHTML(p,showWish=false){
+  const wish=getUserWish();
+  const imgContent=p.img
+    ?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`
+    :`<span class="pcard-emoji">${p.emoji}</span>`;
+  return `<div class="pcard">
+    ${p.badge?`<div class="pcard-badge">${p.badge}</div>`:''}
+    <div class="pcard-media">${imgContent}
+      ${showWish?`<button class="pcard-wish ${wish.includes(p.id)?'on':''}" onclick="toggleWish(${p.id})">${wish.includes(p.id)?'<i class="fas fa-heart"></i>':'<i class="far fa-heart"></i>'}</button>`:''}
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-cat">${p.cat}</div>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-desc">${p.desc}</div>
+      <div class="pcard-foot">
+        <div class="pcard-price-wrap">
+          <div class="pcard-price">${rp(p.price)}</div>
+          ${p.orig?`<div class="pcard-orig">${rp(p.orig)}</div>`:''}
+        </div>
+        <button class="add-btn" onclick="addCart(${p.id})"><i class="fas fa-cart-plus"></i> Keranjang</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════
+function toggleWish(id){
+  let wish=getUserWish();
+  const i=wish.indexOf(id);
+  if(i>=0){wish.splice(i,1);toast('Dihapus dari wishlist.');}
+  else{wish.push(id);toast('<i class="fas fa-heart" style="color:var(--ru);"></i> Ditambahkan ke wishlist!','ok');}
+  setUserWish(wish);
+  renderProds();
+}
+function renderWish(){
+  const g=document.getElementById('wishGrid');if(!g)return;
+  const wish=getUserWish();
+  const prods=S.products.filter(p=>wish.includes(p.id));
+  if(!prods.length){g.innerHTML='<div class="empty"><div class="ei"><i class="far fa-heart" style="font-size:40px;"></i></div><p>Wishlist kosong.</p></div>';return;}
+  g.innerHTML=prods.map(p=>prodCardHTML(p,true)).join('');
+}
+
+// ══════════════════════════════════════
+// CART
+// ══════════════════════════════════════
+function addCart(pid){
+  const p=S.products.find(x=>x.id===pid);if(!p)return;
+  let cart=getUserCart();
+  const ex=cart.find(x=>x.id===pid);
+  if(ex)ex.qty++;
+  else cart.push({id:p.id,name:p.name,price:p.price,emoji:p.emoji,img:p.img,qty:1});
+  setUserCart(cart);
+  syncCart();
+  toast(`${p.emoji} ${p.name} masuk keranjang!`,'ok');
+}
+function removeCart(id){let c=getUserCart();setUserCart(c.filter(x=>x.id!==id));syncCart();renderCart();}
+function changeQty(id,d){
+  let c=getUserCart();
+  const it=c.find(x=>x.id===id);if(!it)return;
+  it.qty+=d;
+  if(it.qty<=0)setUserCart(c.filter(x=>x.id!==id));
+  else setUserCart(c);
+  syncCart();renderCart();
+}
+function cartTotal(){return getUserCart().reduce((s,i)=>s+i.price*i.qty,0);}
+function cartCount(){return getUserCart().reduce((s,i)=>s+i.qty,0);}
+function syncCart(){
+  const n=cartCount();
+  document.querySelectorAll('#cartCnt,.cn').forEach(el=>{if(el)el.textContent=n;});
+  const mcd=document.getElementById('mCD');if(mcd)mcd.style.display=n>0?'block':'none';
+  renderCart();
+}
+function renderCart(){
+  const body=document.getElementById('cartBody');
+  const foot=document.getElementById('cartFoot');
+  if(!body)return;
+  const cart=getUserCart();
+  if(!cart.length){
+    body.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-shopping-cart" style="font-size:40px;opacity:.3;"></i></div><p>Keranjang kosong.</p></div>';
+    if(foot)foot.style.display='none';return;
+  }
+  if(foot)foot.style.display='block';
+  body.innerHTML=cart.map(it=>`
+    <div class="ci">
+      <div class="ci-em">${it.img?`<img src="${it.img}">`:it.emoji}</div>
+      <div style="flex:1;">
+        <div class="ci-name">${it.name}</div>
+        <div class="ci-price">${rp(it.price)}</div>
+        <div class="qty-row">
+          <button class="qb" onclick="changeQty(${it.id},-1)">−</button>
+          <span class="qn">${it.qty}</span>
+          <button class="qb" onclick="changeQty(${it.id},1)">+</button>
+          <button class="rmbtn" onclick="removeCart(${it.id})"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('cartTotVal').textContent=rp(cartTotal());
+}
+function toggleCart(){
+  const p=document.getElementById('cartPanel');
+  document.getElementById('notifPanel').classList.remove('open');
+  p.classList.toggle('open');
+  document.getElementById('pbg').classList.toggle('on',p.classList.contains('open'));
+}
+function toggleNotif(){
+  const p=document.getElementById('notifPanel');
+  document.getElementById('cartPanel').classList.remove('open');
+  p.classList.toggle('open');
+  document.getElementById('pbg').classList.toggle('on',p.classList.contains('open'));
+  if(p.classList.contains('open')){S.notifs.forEach(n=>n.unread=false);syncNDot();renderNotifs();}
+}
+function closePanels(){
+  document.getElementById('cartPanel').classList.remove('open');
+  document.getElementById('notifPanel').classList.remove('open');
+  document.getElementById('pbg').classList.remove('on');
+}
+
+// ══════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════
+const NICONS={order:'<i class="fas fa-box"></i>',promo:'<i class="fas fa-star"></i>',system:'<i class="fas fa-cog"></i>'};
+const NCOLORS={order:'rgba(52,152,219,.14)',promo:'rgba(201,169,110,.14)',system:'rgba(240,165,0,.14)'};
+function addNotif(n){S.notifs.unshift({...n,id:'n'+Date.now(),unread:true});saveState();syncNDot();}
+function syncNDot(){
+  const has=S.notifs.some(n=>n.unread);
+  document.querySelectorAll('.rdot,#nDot,#mND').forEach(el=>{if(el)el.style.display=has?'block':'none';});
+}
+function renderNotifs(){
+  const body=document.getElementById('notifBody');if(!body)return;
+  if(!S.notifs.length){body.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-bell-slash" style="font-size:36px;opacity:.3;"></i></div><p>Belum ada notifikasi.</p></div>';return;}
+  body.innerHTML=S.notifs.map(n=>`
+    <div class="ni ${n.unread?'unread':''}">
+      <div class="ni-ic" style="background:${NCOLORS[n.type]||'var(--ink3)'};">${NICONS[n.type]||'<i class="fas fa-bell"></i>'}</div>
+      <div><div class="ni-title">${n.title}</div><div class="ni-msg">${n.msg}</div><div class="ni-time">${n.time}</div></div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// PAYMENT HISTORY
+// ══════════════════════════════════════
+function renderPayHistory(){
+  const el=document.getElementById('payhistList');if(!el)return;
+  const uIdx=S.users.findIndex(u=>u.id===CURRENT_USER?.id);
+  const hist=(uIdx>=0?(S.users[uIdx].payHistory||[]):[]);
+  if(!hist.length){el.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-receipt" style="font-size:36px;opacity:.3;"></i></div><p>Belum ada riwayat pembayaran.</p></div>';return;}
+  el.innerHTML=hist.map(h=>`
+    <div class="ph-card">
+      <div class="ph-card-hd">
+        <div>
+          <div class="ph-method"><i class="fas fa-credit-card" style="color:var(--gold2);margin-right:6px;"></i>${h.payMethod}</div>
+          <div class="ph-info">${h.orderId} · ${h.createdAt}</div>
+        </div>
+        <div class="ph-amount">${rp(h.amount)}</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+        <div style="font-size:12.5px;color:var(--text2);"><i class="fas fa-map-marker-alt" style="margin-right:4px;"></i>${h.address?.slice(0,45)||'—'}${h.address?.length>45?'...':''}</div>
+        <span class="pill p-${h.status}">${stLbl(h.status)}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// CHECKOUT
+// ══════════════════════════════════════
+function openCheckout(){
+  const cart=getUserCart();
+  if(!cart.length){toast('Keranjang kosong!','warn');return;}
+  if(!CURRENT_USER){toast('Login dulu!','warn');return;}
+  appliedRedeem=null;
+  document.getElementById('ckRedeemInput').value='';
+  document.getElementById('redeemAppliedInfo').innerHTML='';
+  updateCkSummary();
+  document.getElementById('ckName').value=CURRENT_USER.name||'';
+  document.getElementById('ckAddr').value=CURRENT_USER.address||'';
+  S.payMethod=null;
+  document.getElementById('pmGrid').innerHTML=PAY.map(pm=>`
+    <div class="pm" id="pm_${pm.id}" onclick="selPay('${pm.id}')">
+      <div class="pm-icon">${pm.icon}</div>
+      <div class="pm-name">${pm.name}</div>
+      <div class="pm-desc">${pm.desc}</div>
+    </div>`).join('');
+  document.getElementById('pmDetail').innerHTML='';
+  openM('checkoutMod');closePanels();
+}
+function selPay(id){
+  S.payMethod=id;
+  document.querySelectorAll('.pm').forEach(el=>el.classList.remove('on'));
+  const el=document.getElementById('pm_'+id);if(el)el.classList.add('on');
+  const pm=PAY.find(p=>p.id===id);
+  const det=document.getElementById('pmDetail');
+  if(['dana','gopay','ovo','shopeepay','pulsa'].includes(id)){
+    det.innerHTML=`<div class="fg"><label>Nomor ${pm.name}</label><input type="tel" id="pmPhone" placeholder="08xxxxxxxxxx"></div>`;
+  } else if(id==='transfer'){
+    det.innerHTML=`<div style="background:var(--ink3);border:1px solid var(--mist2);border-radius:var(--r);padding:14px;font-size:13px;line-height:1.9;"><b>Rekening Tujuan:</b><br>🏦 BCA: <b>1234567890</b><br>🏦 Mandiri: <b>0987654321</b><br>🏦 BRI: <b>5678901234</b><br><span style="color:var(--text3);">A.N. LUXE Premium Shop</span></div>`;
+  } else if(id==='qris'){
+    det.innerHTML=`<div style="background:var(--ink3);border:1px solid var(--mist2);border-radius:var(--r);padding:20px;text-align:center;"><div style="font-size:52px;margin-bottom:8px;">📲</div><div style="font-size:13px;color:var(--text2);">QR Code dikirim ke email setelah pesanan dikonfirmasi.</div></div>`;
+  } else det.innerHTML='';
+}
+function placeOrder(){
+  const name=document.getElementById('ckName').value.trim();
+  const addr=document.getElementById('ckAddr').value.trim();
+  if(!name||!addr){toast('Lengkapi nama dan alamat!','warn');return;}
+  if(!S.payMethod){toast('Pilih metode pembayaran!','warn');return;}
+  const pm=PAY.find(p=>p.id===S.payMethod);
+  const phoneEl=document.getElementById('pmPhone');
+  const phone=phoneEl?phoneEl.value.trim():'';
+  if(['dana','gopay','ovo','shopeepay','pulsa'].includes(S.payMethod)&&!phone){toast(`Masukkan nomor ${pm.name}!`,'warn');return;}
+  const cart=getUserCart();
+  const baseTotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  let disc=0;
+  if(appliedRedeem){
+    if(appliedRedeem.type==='percent') disc=Math.round(baseTotal*appliedRedeem.value/100);
+    else disc=Math.min(appliedRedeem.value,baseTotal);
+  }
+  const finalTotal=baseTotal-disc;
+  const ordId=uid();
+  const order={id:ordId,userId:CURRENT_USER.id,userName:CURRENT_USER.name,userAvatar:CURRENT_USER.avatar,
+    items:[...cart],total:finalTotal,baseTotal,discount:disc,discountCode:appliedRedeem?.code||null,
+    status:'pending',name,address:addr,payMethod:pm.name+(phone?` (${phone})`:``),createdAt:now()};
+  S.orders.unshift(order);
+  // Save payment history to user
+  const uIdx=S.users.findIndex(u=>u.id===CURRENT_USER.id);
+  if(uIdx>=0){
+    if(!S.users[uIdx].payHistory)S.users[uIdx].payHistory=[];
+    S.users[uIdx].payHistory.unshift({orderId:ordId,payMethod:order.payMethod,amount:finalTotal,status:'pending',address:addr,createdAt:now()});
+    CURRENT_USER.payHistory=S.users[uIdx].payHistory;
+  }
+  setUserCart([]);
+  appliedRedeem=null;
+  saveState();
+  closeM('checkoutMod');updateAdmBadges();
+  toast(`<i class="fas fa-check-circle"></i> Pesanan ${ordId} berhasil!`,'ok');
+  addNotif({type:'order',title:'<i class="fas fa-box"></i> Pesanan Diterima!',msg:`Pesanan ${ordId} sedang diproses. Metode: ${pm.name}.`,time:now()});
+  addActivity('<i class="fas fa-shopping-cart"></i>',`Pesanan baru ${ordId}`,`${CURRENT_USER.name} · ${rp(finalTotal)}`,'var(--em)');
+  showPage('orders');
+}
+
+// ══════════════════════════════════════
+// ORDERS PAGE
+// ══════════════════════════════════════
+function stLbl(s){return{pending:'Pending',processing:'Diproses',success:'Selesai',cancelled:'Dibatalkan'}[s]||s;}
+function stIcon(s){return{pending:'<i class="fas fa-clock"></i>',processing:'<i class="fas fa-sync-alt"></i>',success:'<i class="fas fa-check-circle"></i>',cancelled:'<i class="fas fa-times-circle"></i>'}[s]||'';}
+function renderOrders(){
+  const el=document.getElementById('orderList');if(!el)return;
+  const list=S.orders.filter(o=>o.userId===CURRENT_USER?.id);
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei"><i class="fas fa-box-open" style="font-size:40px;opacity:.3;"></i></div><p>Belum ada pesanan.</p></div>';return;}
+  el.innerHTML=list.map(o=>`
+    <div class="ocard">
+      <div class="ocard-hd">
+        <div><div class="oid">${o.id}</div><div class="odate"><i class="fas fa-calendar-alt" style="margin-right:4px;"></i>${o.createdAt}</div></div>
+        <span class="pill p-${o.status}">${stIcon(o.status)} ${stLbl(o.status)}</span>
+      </div>
+      <div class="ochips">${o.items.map(i=>`<span class="ochip">${i.img?`<img src="${i.img}">`:''}${!i.img?i.emoji:''} ${i.name} ×${i.qty}</span>`).join('')}</div>
+      ${o.discountCode?`<div style="font-size:12px;color:var(--em);margin-bottom:8px;"><i class="fas fa-tag"></i> Kode: ${o.discountCode} (−${rp(o.discount)})</div>`:''}
+      <div class="ofoot">
+        <div><div class="ometa"><i class="fas fa-credit-card" style="margin-right:4px;"></i>${o.payMethod}</div><div class="ometa"><i class="fas fa-map-marker-alt" style="margin-right:4px;"></i>${o.address?.slice(0,50)||''}${o.address?.length>50?'...':''}</div></div>
+        <div class="otot">${rp(o.total)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════
+function openM(id){document.getElementById(id).classList.add('show');}
+function closeM(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.ov').forEach(ov=>ov.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');}));
+
+// ══════════════════════════════════════
+// PRODUCT IMAGE HANDLERS
+// ══════════════════════════════════════
+function handleProdImg(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Ukuran foto maks 5MB!','warn');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    newProdImg=ev.target.result;
+    const prev=document.getElementById('prodImgPreview');
+    prev.src=ev.target.result;prev.style.display='block';
+    document.getElementById('prodImgBox').querySelector('.upload-icon').style.opacity='0';
+    document.getElementById('prodImgBox').querySelector('.upload-text').style.opacity='0';
+    const sub=document.getElementById('prodImgBox').querySelector('.upload-sub');if(sub)sub.style.opacity='0';
+    document.getElementById('prodImgOv').style.display='flex';
+  };
+  reader.readAsDataURL(file);
+}
+function handleEditProdImg(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Ukuran foto maks 5MB!','warn');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    editProdImg=ev.target.result;
+    const prev=document.getElementById('editProdImgPreview');
+    prev.src=ev.target.result;prev.style.display='block';
+    document.getElementById('editProdImgOv').style.display='flex';
+  };
+  reader.readAsDataURL(file);
+}
+function handlePartnerImg(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>3*1024*1024){toast('Ukuran foto maks 3MB!','warn');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    partnerImg=ev.target.result;
+    const prev=document.getElementById('partnerImgPreview');
+    prev.src=ev.target.result;prev.style.display='block';
+    document.getElementById('partnerImgOv').style.display='flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══════════════════════════════════════
+// PARTNERS
+// ══════════════════════════════════════
+function addPartner(){
+  const name=document.getElementById('npPartnerName').value.trim();
+  const desc=document.getElementById('npPartnerDesc').value.trim();
+  const emoji=document.getElementById('npPartnerEmoji').value.trim()||'🏢';
+  if(!name){toast('Nama partner harus diisi!','warn');return;}
+  S.partners.push({id:'p'+Date.now(),name,desc,emoji,img:partnerImg||null,addedAt:now()});
+  saveState();
+  partnerImg=null;
+  closeM('addPartnerMod');
+  ['npPartnerName','npPartnerDesc','npPartnerEmoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const prev=document.getElementById('partnerImgPreview');if(prev){prev.style.display='none';prev.src='';}
+  document.getElementById('partnerImgOv').style.display='none';
+  renderPartners();
+  toast(`Partner "${name}" ditambahkan!`,'ok');
+  addAdminLog(CURRENT_USER?.name||'Admin','ADD_PARTNER',`Partner: ${name}`,'info');
+}
+function renderPartners(){
+  const g=document.getElementById('partnerAdminGrid');if(!g)return;
+  if(!S.partners.length){g.innerHTML='<div style="color:var(--text3);padding:24px;grid-column:1/-1;">Belum ada partner.</div>';return;}
+  g.innerHTML=S.partners.map(p=>`
+    <div class="partner-card">
+      <div class="partner-logo">${p.img?`<img src="${p.img}">`:p.emoji}</div>
+      <div class="partner-name">${p.name}</div>
+      <div class="partner-desc">${p.desc||'—'}</div>
+      <button class="btn btn-red btn-sm" style="margin-top:12px;width:100%;" onclick="deletePartner('${p.id}')"><i class="fas fa-trash"></i> Hapus</button>
+    </div>`).join('');
+}
+function deletePartner(id){
+  if(!confirm('Hapus partner ini?'))return;
+  const p=S.partners.find(x=>x.id===id);
+  S.partners=S.partners.filter(x=>x.id!==id);
+  saveState();renderPartners();toast('Partner dihapus.','');
+  addAdminLog(CURRENT_USER?.name||'Admin','DELETE_PARTNER',`Partner: ${p?.name||id}`,'warn');
+}
+
+// ══════════════════════════════════════
+// ADMIN LOG
+// ══════════════════════════════════════
+function renderAdminLog(){
+  const el=document.getElementById('adminLogList');if(!el)return;
+  if(CURRENT_USER?.role!=='superadmin'){
+    el.innerHTML='<div style="text-align:center;padding:48px;color:var(--ru);"><i class="fas fa-lock" style="font-size:32px;margin-bottom:12px;display:block;"></i>Akses ditolak. Hanya Super Admin yang dapat melihat log ini.</div>';return;
+  }
+  let list=S.adminLog;
+  if(currentLogFilter!=='all') list=list.filter(l=>l.level===currentLogFilter);
+  if(!list.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);">Tidak ada log.</div>';return;}
+  el.innerHTML=list.map(l=>`
+    <div class="log-item">
+      <div class="log-icon"><i class="fas fa-${l.level==='danger'?'exclamation-triangle':l.level==='warn'?'exclamation-circle':'info-circle'}"></i></div>
+      <div class="log-body">
+        <div class="log-title">${l.adminName} <span class="log-level ${l.level}">${l.level.toUpperCase()}</span></div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">${l.action}</div>
+        <div class="log-meta">${l.detail}</div>
+      </div>
+      <div class="log-time">${l.time}</div>
+    </div>`).join('');
+}
+function logFil(f,btn){
+  currentLogFilter=f;
+  document.querySelectorAll('#at-adminlog .sbt').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  renderAdminLog();
+}
+function clearAdminLog(){
+  if(CURRENT_USER?.role!=='superadmin'){toast('Hanya Super Admin!','err');return;}
+  if(!confirm('Hapus semua log admin?'))return;
+  S.adminLog=[];saveState();renderAdminLog();toast('Log dihapus.','');
+}
+
+// ══════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════
+function refreshSidebarUser(){
+  if(!CURRENT_USER)return;
+  const sbAv=document.getElementById('sbAv');
+  if(sbAv)sbAv.innerHTML=CURRENT_USER.avatar?`<img src="${CURRENT_USER.avatar}" style="width:37px;height:37px;object-fit:cover;">`:avHTML(CURRENT_USER,37,'10px');
+  const sbU=document.getElementById('sbUname');if(sbU)sbU.textContent=CURRENT_USER.name;
+  const sbR=document.getElementById('sbUrole');if(sbR)sbR.textContent=CURRENT_USER.role==='superadmin'?'Super Admin':'Admin';
+}
+function renderAdmin(){
+  updateAdmBadges();
+  const rev=S.orders.filter(o=>o.status==='success').reduce((s,o)=>s+o.total,0);
+  document.getElementById('stRev').textContent=rp(rev);
+  document.getElementById('stOrd').textContent=S.orders.length;
+  document.getElementById('stPend').textContent=S.orders.filter(o=>o.status==='pending').length;
+  document.getElementById('stUsr').textContent=S.users.length;
+  const pc=document.getElementById('dashPendCount');
+  if(pc)pc.textContent=S.orders.filter(o=>o.status==='pending').length+' pending';
+  renderOrdTable('dashOrdTbl',S.orders.slice(0,8));
+  renderOrdTable('allOrdTbl',filtOrd());
+  renderAdmProds();renderAdmUsers();renderAdmAdmins();renderBcHistory();
+  renderActFeed();renderCatChart();renderPayChart();
+  renderRedeemAdmin();renderPartners();renderAdminLog();
+  if(clockInt)clearInterval(clockInt);
+  clockInt=setInterval(()=>{
+    const el=document.getElementById('admClock');
+    if(el)el.innerHTML=`<div style="font-size:11.5px;color:var(--text3);">${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div><div style="font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:400;color:var(--gold2);">${new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</div>`;
+  },1000);
+  // Log badge for superadmin
+  const b3=document.getElementById('sbB3');
+  if(b3)b3.style.display=CURRENT_USER?.role==='superadmin'&&S.adminLog.length>0?'inline-flex':'none';
+}
+function admTab(tab,el){
+  document.querySelectorAll('.atab-s').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+  document.getElementById('at-'+tab).classList.add('on');
+  el.classList.add('on');
+  const fn={admins:renderAdmAdmins,products:renderAdmProds,users:renderAdmUsers,
+    orders:()=>renderOrdTable('allOrdTbl',filtOrd()),broadcast:renderBcHistory,
+    dashboard:renderAdmin,analytics:renderAnalytics,redeem:renderRedeemAdmin,
+    partners:renderPartners,adminlog:renderAdminLog};
+  if(fn[tab])fn[tab]();
+  addAdminLog(CURRENT_USER?.name||'Admin','NAV',`Membuka tab: ${tab}`,'info');
+  if(window.innerWidth<=768)closeSB();
+}
+function filtOrd(){return S.ordFilter==='all'?S.orders:S.orders.filter(o=>o.status===S.ordFilter);}
+function ordFil(f,btn){
+  S.ordFilter=f;
+  document.querySelectorAll('#at-orders .sbt').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  renderOrdTable('allOrdTbl',filtOrd());
+}
+function renderOrdTable(tbId,list){
+  const tb=document.getElementById(tbId);if(!tb)return;
+  if(!list.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:38px;color:var(--text3);">Tidak ada pesanan.</td></tr>`;return;}
+  tb.innerHTML=list.map(o=>`
+    <tr>
+      <td><code style="font-size:11px;color:var(--gold2);font-family:monospace;">${o.id}</code></td>
+      <td><div style="display:flex;align-items:center;gap:8px;">${avHTML({name:o.userName,avatar:o.userAvatar},30,'8px')}<span style="font-weight:600;">${o.userName}</span></div></td>
+      <td style="color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${o.items.map(i=>`${i.emoji||''}${i.name}`).join(', ')}</td>
+      <td style="font-weight:700;white-space:nowrap;">${rp(o.total)}</td>
+      <td style="white-space:nowrap;font-size:12.5px;color:var(--text2);">${o.payMethod}</td>
+      <td><span class="pill p-${o.status}">${stLbl(o.status)}</span></td>
+      <td><button class="btn btn-ol btn-sm" onclick="openOrdDet('${o.id}')"><i class="fas fa-eye"></i></button></td>
+    </tr>`).join('');
+}
+function openOrdDet(id){
+  const o=S.orders.find(x=>x.id===id);if(!o)return;
+  document.getElementById('ordDetSub').textContent=`${o.id} · ${o.createdAt}`;
+  document.getElementById('ordDetBody').innerHTML=`
+    <div style="background:var(--ink3);border-radius:var(--r);padding:14px;margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Pembeli</div><div style="font-weight:600;">${o.userName}</div></div>
+        <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Pembayaran</div><div>${o.payMethod}</div></div>
+        <div style="grid-column:span 2;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Alamat</div><div style="color:var(--text2);font-size:13px;">${o.address}</div></div>
+        ${o.discountCode?`<div style="grid-column:span 2;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;">Diskon</div><div style="color:var(--em);">${o.discountCode} (−${rp(o.discount)})</div></div>`:''}
+      </div>
+    </div>
+    ${o.items.map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--mist2);">
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--ink3);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:18px;">${i.img?`<img src="${i.img}" style="width:100%;height:100%;object-fit:cover;">`:i.emoji}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${i.name}</div><div style="font-size:12px;color:var(--text2);">×${i.qty}</div></div>
+      <span style="font-weight:700;">${rp(i.price*i.qty)}</span>
+    </div>`).join('')}
+    <div style="display:flex;justify-content:space-between;padding-top:12px;font-weight:700;font-size:15px;"><span>Total</span><span style="color:var(--gold2);">${rp(o.total)}</span></div>
+    <div style="margin-top:13px;">Status: <span class="pill p-${o.status}">${stLbl(o.status)}</span></div>`;
+  const acts=document.getElementById('ordDetActs');acts.innerHTML='';
+  if(o.status==='pending'){
+    acts.innerHTML+=`<button class="btn btn-grn btn-sm" onclick="setSt('${o.id}','processing')"><i class="fas fa-sync-alt"></i> Proses</button>`;
+    acts.innerHTML+=`<button class="btn btn-red btn-sm" onclick="setSt('${o.id}','cancelled')"><i class="fas fa-times"></i> Batalkan</button>`;
+  }
+  if(o.status==='processing'){
+    acts.innerHTML+=`<button class="btn btn-grn btn-sm" onclick="setSt('${o.id}','success')"><i class="fas fa-check"></i> Selesai</button>`;
+    acts.innerHTML+=`<button class="btn btn-red btn-sm" onclick="setSt('${o.id}','cancelled')"><i class="fas fa-times"></i> Batalkan</button>`;
+  }
+  acts.innerHTML+=`<button class="btn btn-ol btn-sm" onclick="closeM('ordDetailMod')">Tutup</button>`;
+  openM('ordDetailMod');
+}
+function setSt(id,status){
+  const o=S.orders.find(x=>x.id===id);if(!o)return;
+  o.status=status;
+  // Update payment history for that user
+  const uIdx=S.users.findIndex(u=>u.id===o.userId);
+  if(uIdx>=0){
+    const ph=(S.users[uIdx].payHistory||[]);
+    const phIdx=ph.findIndex(p=>p.orderId===id);
+    if(phIdx>=0)ph[phIdx].status=status;
+  }
+  saveState();
+  closeM('ordDetailMod');renderAdmin();
+  toast(`Pesanan ${id} → ${stLbl(status)}`,'ok');
+  addNotif({type:'order',title:'Status Pesanan Diperbarui',msg:`Pesanan ${id}: ${stLbl(status)}`,time:now()});
+  addActivity('<i class="fas fa-box"></i>',`Pesanan ${id}`,stLbl(status),'var(--sa)');
+  addAdminLog(CURRENT_USER?.name||'Admin','ORDER_STATUS',`${id} → ${status}`,'info');
+}
+
+// Admin products
+function renderAdmProds(){
+  const g=document.getElementById('admProdGrid');if(!g)return;
+  const pc=document.getElementById('prodCount');
+  if(pc)pc.textContent=`${S.products.length} produk aktif`;
+  g.innerHTML=S.products.map(p=>`
+    <div class="pcard">
+      ${p.badge?`<div class="pcard-badge">${p.badge}</div>`:''}
+      <div class="pcard-media" style="height:150px;">
+        ${p.img?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`:''}
+        <span class="pcard-emoji" ${p.img?'style="opacity:0;"':''}>${p.emoji}</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-cat">${p.cat}</div>
+        <div class="pcard-name">${p.name}</div>
+        <div style="color:var(--gold2);font-size:17px;font-weight:600;font-family:'Cormorant Garamond',serif;margin:5px 0 3px;">${rp(p.price)}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;"><i class="fas fa-boxes"></i> Stok: ${p.stock||0}</div>
+        <div style="display:flex;gap:6px;justify-content:center;">
+          <button class="btn btn-blue btn-sm" onclick="openEditProd(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+          <button class="btn btn-red btn-sm" onclick="delProd(${p.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addProduct(){
+  const name=document.getElementById('npName').value.trim();
+  const desc=document.getElementById('npDesc').value.trim();
+  const price=parseInt(document.getElementById('npPrice').value)||0;
+  const orig=parseInt(document.getElementById('npOrig').value)||0;
+  const cat=document.getElementById('npCat').value;
+  const stock=parseInt(document.getElementById('npStock').value)||0;
+  const emoji=document.getElementById('npEmoji').value.trim()||'📦';
+  const badge=document.getElementById('npBadge').value.trim().toUpperCase();
+  if(!name||!desc||!price){toast('Lengkapi nama, deskripsi & harga!','warn');return;}
+  S.products.push({id:Date.now(),name,desc,price,orig,cat,emoji,badge,stock,img:newProdImg||null});
+  saveState();
+  closeM('addProdMod');newProdImg=null;
+  ['npName','npDesc','npPrice','npOrig','npEmoji','npBadge','npStock'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const prev=document.getElementById('prodImgPreview');if(prev){prev.style.display='none';prev.src='';}
+  const ov=document.getElementById('prodImgOv');if(ov)ov.style.display='none';
+  renderAdmProds();renderProds();
+  toast(`<i class="fas fa-check-circle"></i> Produk "${name}" ditambahkan!`,'ok');
+  addActivity('<i class="fas fa-plus-circle"></i>',`Produk baru: ${name}`,rp(price),'var(--gold)');
+  addAdminLog(CURRENT_USER?.name||'Admin','ADD_PRODUCT',`${name} | ${rp(price)}`,'info');
+}
+function openEditProd(id){
+  const p=S.products.find(x=>x.id===id);if(!p)return;
+  editProdImg=p.img||null;
+  document.getElementById('epId').value=id;
+  document.getElementById('epName').value=p.name;
+  document.getElementById('epDesc').value=p.desc;
+  document.getElementById('epPrice').value=p.price;
+  document.getElementById('epOrig').value=p.orig||'';
+  document.getElementById('epCat').value=p.cat;
+  document.getElementById('epStock').value=p.stock||0;
+  document.getElementById('epBadge').value=p.badge||'';
+  const prev=document.getElementById('editProdImgPreview');
+  if(p.img){prev.src=p.img;prev.style.display='block';document.getElementById('editProdImgOv').style.display='flex';}
+  else{prev.style.display='none';document.getElementById('editProdImgOv').style.display='none';}
+  openM('editProdMod');
+}
+function saveEditProd(){
+  const id=parseInt(document.getElementById('epId').value);
+  const p=S.products.find(x=>x.id===id);if(!p)return;
+  p.name=document.getElementById('epName').value.trim()||p.name;
+  p.desc=document.getElementById('epDesc').value.trim()||p.desc;
+  p.price=parseInt(document.getElementById('epPrice').value)||p.price;
+  p.orig=parseInt(document.getElementById('epOrig').value)||0;
+  p.cat=document.getElementById('epCat').value;
+  p.stock=parseInt(document.getElementById('epStock').value)||0;
+  p.badge=document.getElementById('epBadge').value.trim().toUpperCase();
+  if(editProdImg!==null)p.img=editProdImg;
+  saveState();
+  closeM('editProdMod');
+  renderAdmProds();renderProds();
+  toast(`<i class="fas fa-check-circle"></i> Produk "${p.name}" diperbarui!`,'ok');
+  addAdminLog(CURRENT_USER?.name||'Admin','EDIT_PRODUCT',`${p.name} | ${rp(p.price)}`,'info');
+}
+function delProd(id){
+  if(!confirm('Hapus produk ini?'))return;
+  const p=S.products.find(x=>x.id===id);
+  S.products=S.products.filter(p=>p.id!==id);
+  saveState();
+  renderAdmProds();renderProds();toast('Produk dihapus.','');
+  addActivity('<i class="fas fa-trash"></i>',`Produk dihapus`,p?.name||'','var(--ru)');
+  addAdminLog(CURRENT_USER?.name||'Admin','DELETE_PRODUCT',`${p?.name||id}`,'warn');
+}
+
+// Admin users
+function renderAdmUsers(){
+  const tb=document.getElementById('usersTbl');if(!tb)return;
+  if(!S.users.length){tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:38px;color:var(--text3);">Belum ada pengguna.</td></tr>`;return;}
+  tb.innerHTML=S.users.map(u=>{
+    const spend=S.orders.filter(o=>o.userId===u.id&&o.status==='success').reduce((s,o)=>s+o.total,0);
+    return`<tr>
+      <td><div style="display:flex;align-items:center;gap:9px;">${avHTML(u,32,'9px')}<div><div style="font-weight:600;">${u.name}</div><div style="font-size:11px;color:var(--text3);">${u.username?`@${u.username}`:u.role}</div></div></div></td>
+      <td style="color:var(--text2);">${u.email}</td>
+      <td style="color:var(--text2);">${u.joined}</td>
+      <td>${S.orders.filter(o=>o.userId===u.id).length}</td>
+      <td style="color:var(--gold2);">${rp(spend)}</td>
+      <td><button class="btn btn-red btn-sm" onclick="delUser('${u.id}')"><i class="fas fa-user-times"></i></button></td>
+    </tr>`;}).join('');
+}
+function delUser(id){
+  if(!confirm('Hapus pengguna ini?'))return;
+  const u=S.users.find(x=>x.id===id);
+  S.users=S.users.filter(u=>u.id!==id);
+  saveState();
+  renderAdmUsers();renderAdmin();toast('Pengguna dihapus.','');
+  addAdminLog(CURRENT_USER?.name||'Admin','DELETE_USER',`${u?.name||id} (${u?.email||''})`,'danger');
+}
+
+// Admin codes
+function genCode(){
+  const code='LUXE-'+Math.random().toString(36).substr(2,7).toUpperCase();
+  S.adminCodes.push({code,used:false,at:now()});
+  saveState();
+  document.getElementById('codeBox').style.display='block';
+  document.getElementById('codeVal').textContent=code;
+  renderCodeList();
+  toast(`Kode "${code}" berhasil dibuat!`,'ok');
+  addAdminLog(CURRENT_USER?.name||'Admin','GEN_ADMIN_CODE',`Kode: ${code}`,'info');
+}
+function renderCodeList(){
+  const el=document.getElementById('codeList');if(!el)return;
+  const active=S.adminCodes.filter(c=>!c.used);
+  if(!active.length){el.innerHTML='<div style="font-size:12px;color:var(--text3);">Tidak ada kode aktif.</div>';return;}
+  el.innerHTML=active.map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--ink3);border-radius:9px;">
+      <code style="font-size:13px;color:var(--gold2);">${c.code}</code>
+      <span style="font-size:11px;color:var(--text3);">Aktif · ${c.at}</span>
+    </div>`).join('');
+}
+function renderAdmAdmins(){
+  const al=document.getElementById('actAdmList');
+  if(al)al.innerHTML=S.admins.map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:11px;background:var(--ink3);border-radius:var(--r);margin-bottom:8px;">
+      ${avHTML(a,32,'9px')}
+      <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${a.name}</div><div style="font-size:11px;color:var(--text3);">${a.email}</div></div>
+      <span class="pill p-success">${a.role}</span>
+    </div>`).join('');
+  const pl=document.getElementById('pendAdmList');
+  if(pl){
+    if(!S.pendAdmins.length){pl.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:13.5px;">Tidak ada pendaftaran baru.</div>';}
+    else pl.innerHTML=S.pendAdmins.map(p=>`
+      <div class="prow">
+        <div><div style="font-weight:600;font-size:14px;">${p.name}</div><div style="font-size:12.5px;color:var(--text2);">${p.email} · <code style="color:var(--gold2);">${p.code}</code></div><div style="font-size:11px;color:var(--text3);margin-top:2px;">${p.at}</div></div>
+        <div style="display:flex;gap:7px;">
+          <button class="btn btn-grn btn-sm" onclick="approveAdm('${p.id}')"><i class="fas fa-check"></i> Setujui</button>
+          <button class="btn btn-red btn-sm" onclick="rejectAdm('${p.id}')"><i class="fas fa-times"></i> Tolak</button>
+        </div>
+      </div>`).join('');
+  }
+  document.getElementById('pendCount').textContent=S.pendAdmins.length+' pending';
+  renderCodeList();updateAdmBadges();
+}
+function approveAdm(id){
+  const p=S.pendAdmins.find(x=>x.id===id);if(!p)return;
+  S.admins.push({id:'a'+Date.now(),name:p.name,email:p.email,pass:p.pass,role:'admin',avatar:null,username:'',bio:'',phone:'',address:''});
+  S.pendAdmins=S.pendAdmins.filter(x=>x.id!==id);
+  saveState();
+  renderAdmAdmins();toast(`<i class="fas fa-check-circle"></i> ${p.name} jadi Admin!`,'ok');
+  addActivity('<i class="fas fa-shield-alt"></i>',`Admin baru: ${p.name}`,p.email,'var(--gold)');
+  addAdminLog(CURRENT_USER?.name||'Admin','APPROVE_ADMIN',`${p.name} (${p.email})`,'info');
+}
+function rejectAdm(id){
+  const p=S.pendAdmins.find(x=>x.id===id);
+  S.pendAdmins=S.pendAdmins.filter(x=>x.id!==id);
+  saveState();
+  renderAdmAdmins();toast(`Ditolak: ${p?.name||''}`, 'warn');
+  addAdminLog(CURRENT_USER?.name||'Admin','REJECT_ADMIN',`${p?.name||id}`,'warn');
+}
+function updateAdmBadges(){
+  const b1=document.getElementById('sbB1'),b2=document.getElementById('sbB2');
+  if(b1)b1.textContent=S.orders.filter(o=>o.status==='pending').length;
+  if(b2)b2.textContent=S.pendAdmins.length;
+}
+
+// Broadcast
+function doBroadcast(){
+  const type=document.getElementById('bcType').value;
+  const title=document.getElementById('bcTitle').value.trim();
+  const msg=document.getElementById('bcMsg').value.trim();
+  if(!title||!msg){toast('Isi judul dan pesan!','warn');return;}
+  const n={id:'b'+Date.now(),type,title,msg,time:now()};
+  S.broadcasts.unshift(n);S.notifs.unshift({...n,unread:true});
+  saveState();
+  syncNDot();
+  document.getElementById('bcTitle').value='';document.getElementById('bcMsg').value='';
+  renderBcHistory();
+  const cc=document.getElementById('bcCount');if(cc)cc.textContent=S.broadcasts.length+' terkirim';
+  toast('<i class="fas fa-paper-plane"></i> Notifikasi terkirim!','ok');
+  addActivity('<i class="fas fa-bullhorn"></i>',`Broadcast: ${title}`,msg.slice(0,40),'var(--pi)');
+  addAdminLog(CURRENT_USER?.name||'Admin','BROADCAST',`"${title}" → ${document.getElementById('bcTarget').value}`,'info');
+}
+function renderBcHistory(){
+  const el=document.getElementById('bcHistory');if(!el)return;
+  if(!S.broadcasts.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:13.5px;">Belum ada broadcast.</div>';return;}
+  el.innerHTML=S.broadcasts.map(n=>`
+    <div style="padding:13px;background:var(--ink3);border-radius:var(--r);margin-bottom:9px;border-left:3px solid var(--gold);">
+      <div style="display:flex;gap:7px;align-items:center;margin-bottom:4px;"><span>${NICONS[n.type]||'<i class="fas fa-bell"></i>'}</span><span style="font-size:13.5px;font-weight:600;">${n.title}</span></div>
+      <p style="font-size:12.5px;color:var(--text2);line-height:1.5;">${n.msg}</p>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">${n.time}</div>
+    </div>`).join('');
+  const cc=document.getElementById('bcCount');if(cc)cc.textContent=S.broadcasts.length+' terkirim';
+}
+
+// Activity feed
+function renderActFeed(){
+  const el=document.getElementById('actFeed');if(!el)return;
+  if(!S.activity.length){el.innerHTML='<div style="text-align:center;padding:28px;color:var(--text3);font-size:13px;">Belum ada aktivitas.</div>';return;}
+  el.innerHTML=S.activity.slice(0,8).map(a=>`
+    <div class="act-item">
+      <div class="act-dot" style="background:${a.color||'var(--gold)'}"></div>
+      <div class="act-content">
+        <div class="act-title">${a.icon} ${a.title}</div>
+        <div class="act-sub">${a.sub}</div>
+      </div>
+      <div class="act-time">${a.time.split(',')[1]||a.time}</div>
+    </div>`).join('');
+}
+
+// Category chart
+function renderCatChart(){
+  const el=document.getElementById('catChart');if(!el)return;
+  const catSales={};
+  S.orders.filter(o=>o.status==='success').forEach(o=>o.items.forEach(i=>{catSales[i.cat]=(catSales[i.cat]||0)+i.price*i.qty;}));
+  const max=Math.max(...Object.values(catSales),1);
+  el.innerHTML=Object.entries(catSales).length?
+    Object.entries(catSales).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>`
+      <div class="abar-wrap">
+        <div class="abar-label"><span>${cat}</span><span style="color:var(--gold2);">${rp(val)}</span></div>
+        <div class="abar"><div class="abar-fill" style="width:${(val/max*100).toFixed(1)}%"></div></div>
+      </div>`).join('')
+    :'<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Belum ada data penjualan.</div>';
+}
+
+// Payment chart
+function renderPayChart(){
+  const el=document.getElementById('payChart');if(!el)return;
+  const payCount={};
+  S.orders.forEach(o=>{const key=o.payMethod.split(' ')[0];payCount[key]=(payCount[key]||0)+1;});
+  const total=Object.values(payCount).reduce((s,n)=>s+n,0)||1;
+  el.innerHTML=Object.entries(payCount).length?
+    Object.entries(payCount).sort((a,b)=>b[1]-a[1]).map(([method,count])=>`
+      <div class="abar-wrap">
+        <div class="abar-label"><span>${method}</span><span style="color:var(--text2);">${count} pesanan</span></div>
+        <div class="abar"><div class="abar-fill" style="width:${(count/total*100).toFixed(1)}%"></div></div>
+      </div>`).join('')
+    :'<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Belum ada data.</div>';
+}
+
+// Analytics
+function renderAnalytics(){
+  const rev=S.orders.filter(o=>o.status==='success').reduce((s,o)=>s+o.total,0);
+  const pending=S.orders.filter(o=>o.status==='pending').length;
+  const cancelled=S.orders.filter(o=>o.status==='cancelled').length;
+  const convRate=S.orders.length?((S.orders.filter(o=>o.status==='success').length/S.orders.length)*100).toFixed(1):0;
+  const el=document.getElementById('anaStats');
+  if(el)el.innerHTML=`
+    <div class="sc gold"><div class="sc-ic"><i class="fas fa-coins"></i></div><div class="sc-lbl">Total Pendapatan</div><div class="sc-val">${rp(rev)}</div><div class="sc-sub">Pesanan sukses</div></div>
+    <div class="sc gr"><div class="sc-ic"><i class="fas fa-percentage"></i></div><div class="sc-lbl">Conversion Rate</div><div class="sc-val">${convRate}%</div><div class="sc-sub">Sukses / Total</div></div>
+    <div class="sc am"><div class="sc-ic"><i class="fas fa-clock"></i></div><div class="sc-lbl">Pending</div><div class="sc-val">${pending}</div><div class="sc-sub">Belum diproses</div></div>
+    <div class="sc sa"><div class="sc-ic"><i class="fas fa-times-circle"></i></div><div class="sc-lbl">Dibatalkan</div><div class="sc-val">${cancelled}</div><div class="sc-sub">Total batal</div></div>`;
+  const prodSales={};
+  S.orders.forEach(o=>o.items.forEach(i=>{prodSales[i.id]=(prodSales[i.id]||0)+i.qty;}));
+  const tp=document.getElementById('topProds');
+  if(tp){
+    const sorted=Object.entries(prodSales).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    tp.innerHTML=sorted.length?sorted.map(([pid,qty])=>{
+      const p=S.products.find(x=>x.id===parseInt(pid));if(!p)return'';
+      return`<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--mist2);">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--ink3);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:20px;">${p.img?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;">`:p.emoji}</div>
+        <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${p.name}</div><div style="font-size:12px;color:var(--text2);">${p.cat}</div></div>
+        <div style="text-align:right;"><div style="font-weight:700;color:var(--gold2);">${qty} terjual</div><div style="font-size:12px;color:var(--text3);">${rp(p.price*qty)}</div></div>
+      </div>`;}).join('')
+    :'<div style="text-align:center;padding:28px;color:var(--text3);font-size:13px;">Belum ada data penjualan.</div>';
+  }
+  const userSpend={};
+  S.orders.filter(o=>o.status==='success').forEach(o=>{userSpend[o.userId]=(userSpend[o.userId]||0)+o.total;});
+  const tu=document.getElementById('topUsers');
+  if(tu){
+    const sorted=Object.entries(userSpend).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    tu.innerHTML=sorted.length?sorted.map(([uid2,spend])=>{
+      const u=S.users.find(x=>x.id===uid2);if(!u)return'';
+      return`<div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--mist2);">
+        ${avHTML(u,36,'10px')}
+        <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;">${u.name}</div><div style="font-size:12px;color:var(--text2);">${u.email}</div></div>
+        <div style="font-weight:700;color:var(--gold2);">${rp(spend)}</div>
+      </div>`;}).join('')
+    :'<div style="text-align:center;padding:28px;color:var(--text3);font-size:13px;">Belum ada data.</div>';
+  }
+  const fin=document.getElementById('finSummary');
+  if(fin){
+    const totalOrd=S.orders.reduce((s,o)=>s+o.total,0);
+    const cancelledVal=S.orders.filter(o=>o.status==='cancelled').reduce((s,o)=>s+o.total,0);
+    fin.innerHTML=`
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:4px;">
+        <div style="padding:16px;background:var(--ink3);border-radius:var(--r);text-align:center;"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">GMV Total</div><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold2);">${rp(totalOrd)}</div></div>
+        <div style="padding:16px;background:var(--ink3);border-radius:var(--r);text-align:center;"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Pendapatan Bersih</div><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--em);">${rp(rev)}</div></div>
+        <div style="padding:16px;background:var(--ink3);border-radius:var(--r);text-align:center;"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Nilai Dibatalkan</div><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--ru);">${rp(cancelledVal)}</div></div>
+      </div>`;
+  }
+}
+
+// Sidebar mobile
+function openSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sbg').classList.add('on');}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbg').classList.remove('on');}
+
+// ══════════════════════════════════════
+// KEYBOARD + RESIZE
+// ══════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePanels();document.querySelectorAll('.ov.show').forEach(o=>o.classList.remove('show'));closeSB();}
+});
+window.addEventListener('resize',()=>{
+  const p=document.querySelector('.pg.show');if(!p)return;
+  const pid=p.id.replace('pg-','');
+  if(pid!=='auth'&&pid!=='admin')document.getElementById('mobnav').style.display=window.innerWidth<=768?'block':'none';
+  buildMobNav(pid);
+  const sbBtn=document.getElementById('sbToggle');
+  if(sbBtn)sbBtn.style.display=(pid==='admin'&&window.innerWidth<=768)?'flex':'none';
+});
+
+// ══════════════════════════════════════
+// INIT — Auto-restore session
+// ══════════════════════════════════════
+(function init(){
+  loadState();
+  const sess=loadSession();
+  if(sess){
+    const u=[...S.users,...S.admins].find(x=>x.id===sess.uid);
+    if(u){
+      CURRENT_USER=u;
+      startSessWatch();
+      if(u.role==='superadmin'||u.role==='admin'){
+        refreshSidebarUser();
+        showPage('admin');
+      } else {
+        showPage('shop');
+      }
+      return;
+    }
+  }
+  showPage('auth');
+})();
+</script>
+</body>
+</html>
